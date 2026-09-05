@@ -1,0 +1,37 @@
+schema: spec-driven
+
+rules:
+  proposal:
+    - Keep each change independently reviewable and releasable.
+    - State the motivation, scope, non-goals, and affected capabilities.
+    - Use skip_specs only for changes without observable behavior changes.
+
+  specs:
+    - Describe observable behavior rather than implementation details.
+    - Use SHALL or MUST for normative requirements.
+    - Give every requirement at least one testable scenario.
+    - Include failure and boundary scenarios where relevant.
+
+  design:
+    - Record significant decisions, alternatives, trade-offs, and limitations.
+    - Separate goals from non-goals.
+    - Reference requirements instead of duplicating them.
+
+  tasks:
+    - Use ordered, verifiable checkbox tasks.
+    - Map implementation and tests to specification scenarios.
+    - Keep post-implementation verification in the verify stage rather than duplicating it as implementation tasks.
+
+operations:
+  apply:
+    guidance:
+      - Complete tasks in order and update their status as work progresses.
+      - Update OpenSpec artifacts before intentionally changing specified behavior.
+
+  archive:
+    guidance:
+      - Do not archive until strict OpenSpec validation succeeds.
+      - Do not archive while openspec-verify-change reports critical issues.
+      - Resolve or explicitly review and accept every verification warning before archiving.
+      - Do not archive until the project precommit gate succeeds with `make precommit`.
+      - Archive warnings do not permit bypassing the project verification gate.

@@ -59,11 +59,15 @@ as the repository grows.
 
 The guide highlights constraints that an agent must not infer only from code:
 
-- observable behavior changes go through OpenSpec;
-- public contracts remain in the root package and independent of drivers and
-  parser-generated types;
+- repository changes follow the OpenSpec lifecycle; changes without observable
+  behavior impact may use `skip_specs: true`, but still require the applicable
+  proposal, tasks, and verification artifacts;
+- core validator, rule, and statement contracts remain in the root package and
+  independent of drivers and parser-generated types; integration-specific
+  public APIs may live in dedicated packages;
 - only `internal/parser` imports `pg_query_go`;
-- parsing remains fail-closed and covers complete input and nested CTEs;
+- enforce mode remains fail-closed and covers complete input and nested CTEs;
+  future audit behavior follows its own accepted capability specification;
 - public errors, logs, and future observability must not expose SQL, literals,
   arguments, credentials, or raw parser diagnostics;
 - Engine state is immutable after construction, and rules own synchronization
@@ -80,8 +84,9 @@ The guide lists `make lint`, `make test`, `make test-race`, `make precommit`,
 `CONTRIBUTOR.md` for detailed verification and archive rules.
 
 A change is complete only when its relevant OpenSpec artifacts match the
-implementation, required tests are present, strict verification has no
-unresolved critical issues, accepted warnings are explicit, and
+implementation, required tests are present, `openspec-verify-change` reports no
+critical issues, every warning is resolved or explicitly reviewed and
+accepted, `openspec validate <change-name> --strict` succeeds, and
 `make precommit` succeeds.
 
 ## Non-goals

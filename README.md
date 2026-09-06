@@ -65,6 +65,28 @@ most 64 ASCII characters, start with a letter or digit, and otherwise contain
 only letters, digits, `.`, `-`, or `_`. Empty and duplicate identifiers are
 rejected during construction.
 
+### Built-in mutation rules
+
+The public `rules` package provides opt-in policies for requiring `WHERE` on
+`UPDATE` and `DELETE` statements:
+
+```go
+import (
+	sqlguard "github.com/almostinf/postgres-sqlguard"
+	"github.com/almostinf/postgres-sqlguard/rules"
+)
+
+engine, err := sqlguard.NewEngine(
+	rules.NewUpdateRequiresWhere(),
+	rules.NewDeleteRequiresWhere(),
+)
+```
+
+Neither policy is enabled implicitly. They inspect parsed PostgreSQL structure,
+so comments and literals cannot imitate a `WHERE` clause. Any syntactically
+present predicate, including `WHERE TRUE`, satisfies these baseline rules;
+tautology analysis is outside their scope.
+
 ## Validation semantics
 
 The Engine parses the complete SQL string once before running any rule. If any

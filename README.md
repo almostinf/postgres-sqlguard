@@ -43,7 +43,7 @@ func (denyDelete) Evaluate(_ context.Context, statement sqlguard.Statement) sqlg
 }
 
 func main() {
-	engine, err := sqlguard.NewEngine(denyDelete{})
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, denyDelete{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,6 +77,7 @@ import (
 )
 
 engine, err := sqlguard.NewEngine(
+	sqlguard.EngineOptions{},
 	rules.NewUpdateRequiresWhere(),
 	rules.NewDeleteRequiresWhere(),
 )
@@ -86,6 +87,119 @@ Neither policy is enabled implicitly. They inspect parsed PostgreSQL structure,
 so comments and literals cannot imitate a `WHERE` clause. Any syntactically
 present predicate, including `WHERE TRUE`, satisfies these baseline rules;
 tautology analysis is outside their scope.
+
+## Observability
+
+Observability is opt-in. The primary constructor now requires `EngineOptions`
+as its first argument.
+
+`Metrics` and `Logger` are independently replaceable. Custom implementations
+receive only an immutable `ValidationEvent` with the bounded `mode`, `outcome`,
+and `rule_id` dimensions:
+
+```go
+type applicationMetrics struct{}
+
+func (applicationMetrics) RecordValidation(event sqlguard.ValidationEvent) error {
+	// Update a bounded application counter from event accessors.
+	return nil
+}
+
+type applicationLogger struct{}
+
+func (applicationLogger) LogValidation(event sqlguard.ValidationEvent) error {
+	// Emit a bounded application record from event accessors.
+	return nil
+}
+
+engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{
+	Metrics: applicationMetrics{},
+	Logger:  applicationLogger{},
+}, applicationRule)
+```
+
+A nil interface disables its implementation independently. An interface that
+contains a typed nil is invalid and causes `NewEngine` to fail instead of
+returning a partially configured engine. Configured implementations must be
+safe for concurrent calls.
+
+For every validation, the Engine synchronously notifies each enabled
+implementation exactly once. Runtime errors and panics from either
+implementation are contained independently: they are not retried, do not cause
+recursive observability events, do not prevent the other implementation from
+running, and never replace a successful result or weaken an enforce-mode
+rejection.
+
+### Prometheus
+
+The official Prometheus adapter requires a caller-owned registry and a
+non-empty, construction-time `Service` value:
+
+```go
+import (
+	prometheusclient "github.com/prometheus/client_golang/prometheus"
+
+	sqlguard "github.com/almostinf/postgres-sqlguard"
+	sqlguardprometheus "github.com/almostinf/postgres-sqlguard/observability/prometheus"
+)
+
+registry := prometheusclient.NewRegistry()
+metrics, err := sqlguardprometheus.New(sqlguardprometheus.Config{
+	Registerer: registry,
+	Service:    "payments_api",
+	// MetricName: "payments_sql_validations_total", // Optional override.
+})
+if err != nil {
+	return err
+}
+
+engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics}, applicationRule)
+```
+
+The default counter name is `sqlguard_validations_total`. `MetricName` can
+replace it with another valid Prometheus metric name. The counter has exactly
+the labels `service`, `mode`, `outcome`, and `rule_id`; `service` is fixed for
+the adapter lifetime and `rule_id` is empty except for `policy_violation`.
+Collectors are registered only with the supplied registerer—never implicitly
+with the process-global registry. Invalid configuration and registration
+conflicts are returned by the adapter constructor.
+
+### log/slog
+
+The official `log/slog` adapter wraps an existing non-nil logger:
+
+```go
+import (
+	"log/slog"
+	"os"
+
+	sqlguard "github.com/almostinf/postgres-sqlguard"
+	sqlguardslog "github.com/almostinf/postgres-sqlguard/observability/slog"
+)
+
+validationLogger, err := sqlguardslog.New(
+	slog.New(slog.NewJSONHandler(os.Stdout, nil)),
+)
+if err != nil {
+	return err
+}
+
+engine, err := sqlguard.NewEngine(
+	sqlguard.EngineOptions{Logger: validationLogger},
+	applicationRule,
+)
+```
+
+Every enabled record uses the message `sqlguard validation` and exactly the
+attributes `mode`, `outcome`, and `rule_id`. The levels are INFO for `allowed`,
+ERROR for `policy_violation` and `parser_failure`, and DEBUG for `canceled`.
+The adapter uses a clean background context so request-scoped values cannot
+reach the configured handler.
+
+Observability never receives SQL text, SQL arguments, literals, comments,
+tokens, credentials, secrets, parser diagnostics, returned errors, or caller
+context values. This release emits only `mode="enforce"`; audit-mode behavior is
+not implemented or implied.
 
 ## Validation semantics
 

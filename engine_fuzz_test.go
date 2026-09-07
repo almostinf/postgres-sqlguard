@@ -30,7 +30,7 @@ func FuzzEngineValidate(f *testing.F) {
 		f.Add(seed)
 	}
 
-	engine, err := sqlguard.NewEngine(&ruleStub{
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, &ruleStub{
 		id: "fuzz_reject",
 		evaluate: func(context.Context, sqlguard.Statement) sqlguard.RuleResult {
 			return sqlguard.Reject()

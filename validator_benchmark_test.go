@@ -7,13 +7,20 @@ import (
 	sqlguard "github.com/almostinf/postgres-sqlguard"
 )
 
-func BenchmarkEngineValidate(b *testing.B) {
-	engine, err := sqlguard.NewEngine(&ruleStub{id: "benchmark_allow"})
-	if err != nil {
-		b.Fatal(err)
-	}
+type benchmarkMetrics struct{}
 
-	benchmarks := map[string]string{
+func (benchmarkMetrics) RecordValidation(sqlguard.ValidationEvent) error {
+	return nil
+}
+
+type benchmarkLogger struct{}
+
+func (benchmarkLogger) LogValidation(sqlguard.ValidationEvent) error {
+	return nil
+}
+
+func BenchmarkEngineValidate(b *testing.B) {
+	inputs := map[string]string{
 		"single_statement": "SELECT * FROM accounts WHERE id = 42",
 		"multi_statement": `
 			SELECT 1;
@@ -35,15 +42,38 @@ func BenchmarkEngineValidate(b *testing.B) {
 		`,
 	}
 
-	for name, sql := range benchmarks {
-		b.Run(name, func(b *testing.B) {
-			b.ReportAllocs()
-			b.ResetTimer()
+	configurations := map[string]sqlguard.EngineOptions{
+		"logger_noop": {
+			Logger: benchmarkLogger{},
+		},
+		"metrics_and_logger_noop": {
+			Metrics: benchmarkMetrics{},
+			Logger:  benchmarkLogger{},
+		},
+		"metrics_noop": {
+			Metrics: benchmarkMetrics{},
+		},
+		"observability_disabled": {},
+	}
 
-			for b.Loop() {
-				if err := engine.Validate(context.Background(), sql); err != nil {
-					b.Fatal(err)
-				}
+	for configurationName, options := range configurations {
+		b.Run(configurationName, func(b *testing.B) {
+			engine, err := sqlguard.NewEngine(options, &ruleStub{id: "benchmark_allow"})
+			if err != nil {
+				b.Fatal(err)
+			}
+
+			for inputName, sql := range inputs {
+				b.Run(inputName, func(b *testing.B) {
+					b.ReportAllocs()
+					b.ResetTimer()
+
+					for b.Loop() {
+						if err := engine.Validate(context.Background(), sql); err != nil {
+							b.Fatal(err)
+						}
+					}
+				})
 			}
 		})
 	}

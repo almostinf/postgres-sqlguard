@@ -112,7 +112,7 @@ func TestDeleteRequiresWhere(t *testing.T) {
 }
 
 func TestMutationRulesAreOptIn(t *testing.T) {
-	engine, err := sqlguard.NewEngine()
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{})
 	require.NoError(t, err)
 
 	tests := map[string]validationTestCase{
@@ -167,7 +167,7 @@ func runValidationTests(
 func mustNewEngine(t *testing.T, registeredRules ...sqlguard.Rule) *sqlguard.Engine {
 	t.Helper()
 
-	engine, err := sqlguard.NewEngine(registeredRules...)
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, registeredRules...)
 	require.NoError(t, err)
 
 	return engine

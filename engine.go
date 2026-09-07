@@ -12,14 +12,19 @@ import (
 var (
 	errNilRule       = errors.New("sqlguard: rule must not be nil")
 	errInvalidRuleID = errors.New("sqlguard: rule identifier is invalid")
+	errNilMetrics    = errors.New("sqlguard: metrics must not be nil")
+	errNilLogger     = errors.New("sqlguard: logger must not be nil")
 )
 
-// Engine is an immutable Validator configured only with the ordered Rules
-// supplied explicitly at construction. It has no global registry or implicit
-// default rules. Once constructed, an Engine is safe for concurrent use when
-// its rules satisfy the Rule concurrency contract.
+// Engine is an immutable Validator configured with independently optional
+// observability implementations and the ordered Rules supplied explicitly at
+// construction. It has no global registry or implicit default rules. Once
+// constructed, an Engine is safe for concurrent use when its rules and
+// observability implementations satisfy their concurrency contracts.
 type Engine struct {
-	rules []registeredRule
+	rules   []registeredRule
+	metrics Metrics
+	logger  Logger
 }
 
 type registeredRule struct {
@@ -27,9 +32,20 @@ type registeredRule struct {
 	rule   Rule
 }
 
-// NewEngine constructs an Engine from rules in registration order. It returns
-// no partially configured Engine when any registration is invalid.
-func NewEngine(rules ...Rule) (*Engine, error) {
+// NewEngine constructs an Engine from options and rules in registration order.
+// Zero-valued options disable observability. A nil Metrics or Logger interface
+// disables that sink, while an interface containing a typed nil is invalid. It
+// returns no partially configured Engine when any option or registration is
+// invalid.
+func NewEngine(options EngineOptions, rules ...Rule) (*Engine, error) {
+	if isTypedNil(options.Metrics) {
+		return nil, errNilMetrics
+	}
+
+	if isTypedNil(options.Logger) {
+		return nil, errNilLogger
+	}
+
 	ruleIDs, err := validateRules(rules)
 	if err != nil {
 		return nil, err
@@ -40,7 +56,11 @@ func NewEngine(rules ...Rule) (*Engine, error) {
 		registrations = append(registrations, registeredRule{ruleID: ruleIDs[index], rule: rule})
 	}
 
-	return &Engine{rules: registrations}, nil
+	return &Engine{
+		rules:   registrations,
+		metrics: options.Metrics,
+		logger:  options.Logger,
+	}, nil
 }
 
 // validateRules verifies the complete ordered rule collection before Engine
@@ -72,20 +92,26 @@ func validateRules(rules []Rule) ([]string, error) {
 
 // Validate parses the complete SQL input once and evaluates registered rules
 // in registration order for every statement in deterministic traversal order.
-// It returns immediately on the first rejected rule result.
+// It returns immediately on the first rejected rule result. Before returning,
+// it synchronously emits the terminal outcome once to each enabled observability
+// implementation. Sink errors and panics do not change the returned result.
 func (e *Engine) Validate(ctx context.Context, sql string) error {
 	if err := ctx.Err(); err != nil {
-		return err
+		return e.finishValidation(ValidationOutcomeCanceled, "", err)
 	}
 
 	result, parseErr := parser.Parse(sql)
 
 	if err := ctx.Err(); err != nil {
-		return err
+		return e.finishValidation(ValidationOutcomeCanceled, "", err)
 	}
 
 	if parseErr != nil {
-		return translateParserError(parseErr)
+		return e.finishValidation(
+			ValidationOutcomeParserFailure,
+			"",
+			translateParserError(parseErr),
+		)
 	}
 
 	for _, root := range parser.StatementSequence(result) {
@@ -93,16 +119,51 @@ func (e *Engine) Validate(ctx context.Context, sql string) error {
 
 		for _, registration := range e.rules {
 			if err := ctx.Err(); err != nil {
-				return err
+				return e.finishValidation(ValidationOutcomeCanceled, "", err)
 			}
 
 			if registration.rule.Evaluate(ctx, statement).Rejected() {
-				return newViolation(registration.ruleID)
+				return e.finishValidation(
+					ValidationOutcomePolicyViolation,
+					registration.ruleID,
+					newViolation(registration.ruleID),
+				)
 			}
 		}
 	}
 
-	return nil
+	return e.finishValidation(ValidationOutcomeAllowed, "", nil)
+}
+
+// finishValidation synchronously emits the already classified terminal event
+// before returning the original validation result.
+func (e *Engine) finishValidation(outcome ValidationOutcome, ruleID string, result error) error {
+	event := newValidationEvent(ValidationModeEnforce, outcome, ruleID)
+
+	if e.metrics != nil {
+		isolateObservabilityFailure(func() error {
+			return e.metrics.RecordValidation(event)
+		})
+	}
+
+	if e.logger != nil {
+		isolateObservabilityFailure(func() error {
+			return e.logger.LogValidation(event)
+		})
+	}
+
+	return result
+}
+
+// isolateObservabilityFailure contains one runtime sink call. Runtime errors
+// and panics are deliberately discarded without retrying or emitting another
+// event, leaving validation results unchanged.
+func isolateObservabilityFailure(call func() error) {
+	defer func() {
+		_ = recover()
+	}()
+
+	_ = call()
 }
 
 // isNilRule rejects both a nil interface and an interface containing a typed
@@ -112,10 +173,19 @@ func isNilRule(rule Rule) bool {
 		return true
 	}
 
-	value := reflect.ValueOf(rule)
-	switch value.Kind() {
+	return isTypedNil(rule)
+}
+
+// isTypedNil reports whether a non-nil interface contains a nil value.
+func isTypedNil(value any) bool {
+	if value == nil {
+		return false
+	}
+
+	reflected := reflect.ValueOf(value)
+	switch reflected.Kind() {
 	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
-		return value.IsNil()
+		return reflected.IsNil()
 	default:
 		return false
 	}

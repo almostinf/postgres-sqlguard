@@ -145,7 +145,7 @@ func TestNewEngine(t *testing.T) {
 				testCase.setupTest(t)
 			}
 
-			engine, err := sqlguard.NewEngine(testCase.rules...)
+			engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, testCase.rules...)
 
 			require.NotNil(t, testCase.checkError, "test case must define checkError")
 			testCase.checkError(t, err)
@@ -241,7 +241,7 @@ func TestEngineRuleRegistration(t *testing.T) {
 func mustNewEngine(t *testing.T, rules ...sqlguard.Rule) *sqlguard.Engine {
 	t.Helper()
 
-	engine, err := sqlguard.NewEngine(rules...)
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, rules...)
 	require.NoError(t, err)
 
 	return engine

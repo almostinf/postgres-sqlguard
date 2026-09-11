@@ -59,7 +59,9 @@ satisfies.
 `Prepare` checks the caller context, parses the complete input once with the
 existing PostgreSQL grammar, checks the context again after synchronous
 parsing, and converts the result to the same immutable parser-neutral tree
-used by normal validation. It does not evaluate rules.
+used by normal validation. It does not evaluate rules. If parsing and context
+cancellation occur together, cancellation takes precedence, matching existing
+`Validate` behavior.
 
 If parsing fails, `Prepare` returns the existing typed, privacy-safe
 `ParseError` and synchronously emits one `parser_failure` event through the
@@ -69,7 +71,9 @@ parsing, `Prepare` returns the identifiable context error and emits one
 `canceled` event. Successful preparation emits no terminal outcome because no
 policy decision has occurred yet.
 
-`ValidatePrepared` checks the context and the prepared value, then evaluates
+`ValidatePrepared` checks the context and then the prepared value, so an
+already-canceled context takes precedence over an invalid prepared value. It
+then evaluates
 all registered rules in registration order across every top-level statement
 and statement-bearing nested CTE. It checks context during traversal and emits
 exactly one terminal outcome for every call. Rules are evaluated again on
@@ -123,12 +127,15 @@ Each guarded call follows this sequence:
    validation, or delegation.
 2. Look up the exact SQL string in the local cache.
 3. On a hit, call `ValidatePrepared`.
-4. On a miss in which the SQL exceeds `MaxSQLBytes`, call `Prepare` and
-   `ValidatePrepared` without inserting the result.
-5. On a cacheable miss, call `Prepare`; return immediately on a parser or
-   context error; otherwise insert the prepared representation and call
-   `ValidatePrepared`.
-6. Delegate the unchanged context, SQL, and ordered arguments exactly once
+4. On any miss, call `Prepare`; on any non-nil preparation error, return
+   immediately without validation, insertion, or delegation.
+5. Call `ValidatePrepared` for the successfully prepared miss. Any non-nil
+   validation error prevents delegation.
+6. If the SQL does not exceed `MaxSQLBytes`, insert the prepared
+   representation only when validation allows it or returns an error
+   discoverable as a policy violation. Do not insert it for any other
+   validation error. Oversized SQL is never inserted.
+7. Delegate the unchanged context, SQL, and ordered arguments exactly once
    only after validation succeeds.
 
 Successfully parsed representations remain cacheable even when later rule
@@ -138,12 +145,22 @@ decision, and every future hit re-runs the rules.
 `QueryRow` continues to expose preparation or validation failures from
 `Scan`, without calling the executor.
 
+The example does not support executing manually registered pgx server-side
+prepared statements by passing their name as the `sql` argument. That path can
+execute SQL different from the string seen by SQLGuard, and a prepared
+statement name can itself look like valid SQL, so the wrapper cannot detect it
+reliably. Documentation must distinguish SQLGuard's client-side `Prepared`
+representation from pgx/server prepared statements and require that callers
+do not use statement names through this guarded boundary.
+
 ## Cache Design
 
 The cache is owned by one `GuardedDB` and is not global. It is an LRU bounded
 by entry count, while `MaxSQLBytes` prevents a single accepted key from being
 arbitrarily large. It uses exact SQL strings as keys, avoiding correctness
-risk from digest collisions.
+risk from digest collisions. Every inserted key is copied into cache-owned
+storage, for example with `strings.Clone`, so a short SQL substring cannot
+retain an arbitrarily large caller-owned backing string.
 
 A mutex protects the map, LRU list, and recency updates. Parsing occurs outside
 the mutex. Cache insertion performs a second lookup so concurrent misses do
@@ -152,9 +169,12 @@ the same missing SQL more than once; this is an accepted simplicity trade-off
 and does not affect correctness. The design introduces no singleflight
 dependency or lock spanning CGO parsing and rule execution.
 
-Parser failures are never cached. Oversized inputs are validated normally but
-never cached. Eviction removes the cache's references but cannot guarantee
-immediate memory erasure under Go's garbage collector.
+Parser failures and calls canceled before insertion are never cached.
+Oversized inputs are validated normally but never cached. Eviction removes the
+cache's references but cannot guarantee immediate memory erasure under Go's
+garbage collector. The cache boundary covers its bounded entry count and owned
+key bytes; concurrent in-flight parses and `Prepared` values retained by
+callers are outside that retained-memory boundary.
 
 ## Privacy and Safety
 
@@ -166,7 +186,7 @@ must state that:
 - `Prepared` values must not be logged, serialized, or retained indefinitely;
 - parameterized SQL should be used so changing values remain driver arguments
   rather than cache keys or AST literals;
-- the cache retains exact SQL keys and parsed AST contents;
+- the cache retains copied exact SQL keys and parsed AST contents;
 - entry and input-size limits reduce retention but do not erase memory;
 - eviction and garbage collection do not guarantee prompt zeroization.
 
@@ -178,7 +198,11 @@ contain SQL text, literals, arguments, cache keys, or raw parser diagnostics.
 Preparation reuses the existing parser and cancellation error contracts.
 Invalid prepared values use `ErrInvalidPrepared`; callers inspect it with
 `errors.Is`. The `invalid_prepared` outcome is a fixed bounded label and is
-added consistently to the core observability contract and official sinks.
+added consistently to the core observability contract and official sinks. The
+official `log/slog` integration records it at ERROR level, matching other
+fail-closed structural validation failures. The official Prometheus
+integration records it as the fixed `outcome="invalid_prepared"` label with an
+empty `rule_id`.
 
 Observability sink errors and panics remain isolated from returned validation
 results. Preparation failures, invalid prepared values, policy violations,
@@ -192,18 +216,31 @@ Core tests cover:
 - successful preparation without rule calls or terminal events;
 - typed parser failure and exactly one `parser_failure` event;
 - context cancellation before and after parsing;
+- cancellation precedence over a simultaneous parser failure, and
+  already-canceled context precedence over an invalid prepared value;
 - zero-value rejection with `ErrInvalidPrepared` and `invalid_prepared`;
 - complete top-level and nested-CTE traversal;
 - per-call evaluation of context-dependent and stateful rules;
 - use of one prepared value across engines and goroutines;
-- unchanged `Validate` error and observability behavior;
+- a regression matrix comparing `Validate` with the composed prepared path for
+  allowed, violation, parser-failure, cancellation, traversal order, returned
+  error identity, and emitted events;
+- exactly one event from composed `Validate` calls, including preparation
+  failures;
+- Prometheus recording and ERROR-level `log/slog` handling of
+  `invalid_prepared`;
+- independent metrics/logger error and panic isolation on parser-failure and
+  invalid-prepared paths;
 - malformed inputs and race-detector coverage.
 
 The pgx-prepared example tests cover:
 
 - constructor validation;
 - exact cache hits, misses, recency updates, eviction, and oversized bypass;
+- proof that inserted keys own their string storage instead of retaining a
+  caller's larger backing value;
 - parser failures not being cached;
+- cancellation after preparation not inserting a new cache entry;
 - policy violations retaining only the parsed representation and being
   re-evaluated on later calls;
 - concurrent cache access;
@@ -250,6 +287,7 @@ This change does not add:
 - SQL normalization, redaction, hashing, or AST serialization;
 - singleflight miss suppression;
 - a production-supported pgx adapter;
+- execution of manually registered pgx/server prepared statements by name;
 - protection for pgx batch, transaction, nested transaction, `CopyFrom`, or
   unwrapped connection paths;
 - changes to audit-mode or no-CGO delivery stages.

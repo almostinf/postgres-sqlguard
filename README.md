@@ -308,8 +308,24 @@ make fuzz
 make fuzz FUZZ_TIME=1m
 ```
 
-Run the allocation-reporting benchmark baseline:
+Run the validation benchmarks with allocation reporting:
 
 ```sh
 make bench
 ```
+
+The suite exposes three independently filterable benchmark groups:
+
+- `BenchmarkEngineValidateByComplexity` compares simple, medium,
+  multi-statement, and nested-CTE SQL with the outcome and observability setup
+  held constant.
+- `BenchmarkEngineValidateByOutcome` compares allowed, policy-violation, and
+  parser-failure paths with observability disabled.
+- `BenchmarkEngineObservability` compares disabled, metrics-only, logger-only,
+  and combined no-op observability sinks using the same allowed SQL input.
+
+Results are absolute `Validate` measurements reported as `ns/op`, `B/op`, and
+`allocs/op`. Present a complexity comparison as **Validation latency by SQL
+complexity**. The suite does not provide a synthetic "without SQLGuard"
+baseline; compare validation latency with latency measured in your own database
+path.

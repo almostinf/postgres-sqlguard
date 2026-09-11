@@ -50,9 +50,10 @@ custom rules continue to be registered through Go code.
 
 The core validator must not depend on pgx or any other database driver.
 
-The project provides a production-ready pgx integration that applies the same
-validator to normal pgx and pgxpool execution paths. Direct validation and the
-official pgx integration are both supported product use cases.
+The project provides a maintained, compiling pgx example that applies the same
+validator to the explicitly limited `Exec`, `Query`, and `QueryRow` execution
+paths. The example is illustrative: it is not an official production adapter
+and does not carry a stable API compatibility commitment.
 
 Other drivers can integrate through the validator contract. The project may
 provide examples for those integrations without committing to maintain every
@@ -80,8 +81,8 @@ mistaken for SQL syntax.
 ### Fail closed enforcement
 
 Enforce mode is the default safety boundary. An unsafe statement or a statement
-that cannot be parsed must be rejected before an official driver integration
-contacts PostgreSQL.
+that cannot be parsed must be rejected before a documented guarded integration
+delegates to a database driver.
 
 Any supported mechanism that can rewrite SQL after validation must either
 validate the resulting SQL or be explicitly unsupported. The library must not
@@ -141,19 +142,22 @@ selected policy.
 Support for resolving third-party custom rules from YAML is outside the initial
 scope and may be proposed later.
 
-### Official pgx integration
+### pgx integration example
 
-The official pgx integration must validate SQL before delegating supported
-operations. It must cover normal command, query, row, batch, prepared
-statement, and transaction workflows, including nested transactions.
+The maintained pgx example must validate SQL before delegating its supported
+`Exec`, `Query`, and `QueryRow` operations. Rejected operations must not reach
+the underlying executor. Because `QueryRow` reports errors through row
+scanning, validation failures must remain discoverable through `Scan`.
 
-When pgx reports an error through a deferred interface, such as row scanning
-or batch results, validation failures must remain discoverable through the same
-interface. Rejected operations must not reach the underlying connection.
+Any argument that can rewrite SQL after validation must be rejected before the
+validator or executor is called. This includes pgx `QueryRewriter`-based named
+and struct arguments; positional arguments are the supported example path.
 
-Operations that do not provide SQL text, such as `CopyFrom`, are delegated
-without AST validation and documented as a limitation. APIs that expose the
-raw pgx connection are also documented as escape hatches from the guard.
+Batch execution, prepared statement workflows, transactions (including nested
+transactions), `CopyFrom`, and direct use of an unwrapped pgx connection or
+pool are outside the example's validation boundary. Applications adapting the
+example are responsible for ensuring that every execution path they intend to
+protect crosses their own guarded boundary.
 
 ### Errors
 
@@ -197,7 +201,8 @@ The first usable release includes:
 - typed, privacy-safe errors;
 - replaceable metrics and logging abstractions, plus official Prometheus and
   `log/slog` integrations;
-- the production-ready pgx integration;
+- a documented, compiling pgx integration example for its explicitly limited
+  execution paths;
 - tests and benchmarks for the supported safety boundary.
 
 The MVP may require CGO. This constraint must be documented clearly for

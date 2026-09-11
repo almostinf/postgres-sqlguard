@@ -88,6 +88,44 @@ so comments and literals cannot imitate a `WHERE` clause. Any syntactically
 present predicate, including `WHERE TRUE`, satisfies these baseline rules;
 tautology analysis is outside their scope.
 
+## pgx example
+
+The compiling [pgx example](example/pgx) demonstrates a narrow validation
+boundary around a pgx connection or pool:
+
+```go
+pool, err := pgxpool.New(ctx, databaseURL)
+if err != nil {
+	return err
+}
+
+guarded, err := pgxexample.NewGuardedDB(engine, pool)
+if err != nil {
+	return err
+}
+
+_, err = guarded.Exec(
+	ctx,
+	"UPDATE accounts SET active = $1 WHERE id = $2",
+	false,
+	accountID,
+)
+```
+
+This is an illustrative example, not an official production adapter, and its
+API has no compatibility guarantee. It protects only `Exec`, `Query`, and
+`QueryRow` calls made through `GuardedDB` with positional arguments. A rejected
+`QueryRow` reports its error from `Scan`, consistent with pgx behavior.
+
+Batch execution, prepared statement workflows, transactions (including nested
+transactions), `CopyFrom`, and direct use of the retained connection or pool
+are outside the example's validation boundary. Arguments implementing
+`pgx.QueryRewriter` are rejected before validation or delegation, so
+`pgx.NamedArgs`, `pgx.StrictNamedArgs`, `pgx.StructArgs`, and
+`pgx.StrictStructArgs` are unsupported. Applications adopting this pattern
+remain responsible for ensuring every database path crosses their guarded
+boundary.
+
 ## Observability
 
 Observability is opt-in. The primary constructor now requires `EngineOptions`

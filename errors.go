@@ -6,6 +6,10 @@ import (
 	"github.com/almostinf/postgres-sqlguard/internal/parser"
 )
 
+// ErrInvalidPrepared indicates that prepared validation received a zero or
+// otherwise invalid Prepared value. It contains no SQL or parsed structure.
+var ErrInvalidPrepared = errors.New("sqlguard: invalid prepared value")
+
 const (
 	violationMessage  = "sql validation rejected by rule"
 	parseErrorMessage = "sql validation parsing failed"

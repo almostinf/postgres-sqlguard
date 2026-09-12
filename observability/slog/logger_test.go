@@ -200,6 +200,29 @@ func TestLoggerHonorsDisabledHandler(t *testing.T) {
 	require.Empty(t, handledRecords)
 }
 
+func TestLoggerEmitsInvalidPreparedAtError(t *testing.T) {
+	handler := &recordingHandler{enabled: true}
+	logger := mustNewLogger(t, handler)
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Logger: logger})
+	require.NoError(t, err)
+
+	err = engine.ValidatePrepared(context.Background(), sqlguard.Prepared{})
+	require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+
+	enabledCalls, handledRecords := handler.Snapshot()
+	require.Len(t, enabledCalls, 1)
+	require.Equal(t, stdslog.LevelError, enabledCalls[0].level)
+	require.Len(t, handledRecords, 1)
+	require.Equal(t, stdslog.LevelError, handledRecords[0].record.Level)
+	require.Equal(t, "sqlguard validation", handledRecords[0].record.Message)
+	require.Equal(t, 3, handledRecords[0].record.NumAttrs())
+	require.Equal(t, map[string]string{
+		"mode":    "enforce",
+		"outcome": "invalid_prepared",
+		"rule_id": "",
+	}, recordAttributes(handledRecords[0].record))
+}
+
 func TestLoggerReturnsHandlerError(t *testing.T) {
 	handlerError := errors.New("handler unavailable")
 	handler := &recordingHandler{enabled: true, handleError: handlerError}

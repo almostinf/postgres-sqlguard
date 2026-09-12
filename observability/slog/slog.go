@@ -48,7 +48,9 @@ func (l *Logger) LogValidation(event sqlguard.ValidationEvent) error {
 
 func validationLevel(outcome sqlguard.ValidationOutcome) stdslog.Level {
 	switch outcome {
-	case sqlguard.ValidationOutcomePolicyViolation, sqlguard.ValidationOutcomeParserFailure:
+	case sqlguard.ValidationOutcomePolicyViolation,
+		sqlguard.ValidationOutcomeParserFailure,
+		sqlguard.ValidationOutcomeInvalidPrepared:
 		return stdslog.LevelError
 	case sqlguard.ValidationOutcomeCanceled:
 		return stdslog.LevelDebug

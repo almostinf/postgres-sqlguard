@@ -1,17 +1,4 @@
-# validation-engine Specification
-
-## Purpose
-
-Defines the driver-independent validation boundary, PostgreSQL-accurate parsing, complete statement coverage, context behavior, concurrency guarantees, and benchmark baseline.
-
-## Requirements
-
-### Requirement: Driver-independent validation API
-The library SHALL expose a `Validator` contract and an `Engine` implementation that validate SQL without requiring a database connection or importing a database-driver API. A validation that parses successfully and produces no rule violation SHALL succeed without contacting PostgreSQL.
-
-#### Scenario: Valid statement is accepted without a driver
-- **WHEN** a caller validates a syntactically valid PostgreSQL statement and every registered rule accepts it
-- **THEN** validation succeeds without using a database connection or driver
+## ADDED Requirements
 
 ### Requirement: Reusable prepared validation
 The engine SHALL allow a caller to parse complete SQL into an opaque immutable
@@ -41,6 +28,8 @@ SQL text, or mutable parsed state.
 #### Scenario: Direct validation preserves behavior
 - **WHEN** a caller uses `Validate` instead of the prepared API
 - **THEN** the engine prepares and validates the input with the same returned result, traversal, context, and single terminal outcome as before
+
+## MODIFIED Requirements
 
 ### Requirement: PostgreSQL grammar parsing
 The engine SHALL parse the complete validation input using a PostgreSQL grammar

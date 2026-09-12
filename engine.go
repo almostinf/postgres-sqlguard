@@ -90,31 +90,58 @@ func validateRules(rules []Rule) ([]string, error) {
 	return ruleIDs, nil
 }
 
-// Validate parses the complete SQL input once and evaluates registered rules
-// in registration order for every statement in deterministic traversal order.
-// It returns immediately on the first rejected rule result. Before returning,
-// it synchronously emits the terminal outcome once to each enabled observability
-// implementation. Sink errors and panics do not change the returned result.
+// Validate prepares the complete SQL input and validates the resulting parsed
+// representation. It preserves the same errors, traversal, context behavior,
+// and single terminal outcome as calling Prepare followed by ValidatePrepared.
 func (e *Engine) Validate(ctx context.Context, sql string) error {
+	prepared, err := e.Prepare(ctx, sql)
+	if err != nil {
+		return err
+	}
+
+	return e.ValidatePrepared(ctx, prepared)
+}
+
+// Prepare synchronously parses the complete SQL input once without evaluating
+// rules. A successful preparation emits no terminal validation outcome. Parse
+// and context failures are emitted once through the Engine's observability
+// implementations before the error is returned.
+func (e *Engine) Prepare(ctx context.Context, sql string) (Prepared, error) {
 	if err := ctx.Err(); err != nil {
-		return e.finishValidation(ValidationOutcomeCanceled, "", err)
+		return Prepared{}, e.finishValidation(ValidationOutcomeCanceled, "", err)
 	}
 
 	result, parseErr := parser.Parse(sql)
 
 	if err := ctx.Err(); err != nil {
-		return e.finishValidation(ValidationOutcomeCanceled, "", err)
+		return Prepared{}, e.finishValidation(ValidationOutcomeCanceled, "", err)
 	}
 
 	if parseErr != nil {
-		return e.finishValidation(
+		return Prepared{}, e.finishValidation(
 			ValidationOutcomeParserFailure,
 			"",
 			translateParserError(parseErr),
 		)
 	}
 
-	for _, root := range parser.StatementSequence(result) {
+	return Prepared{result: result}, nil
+}
+
+// ValidatePrepared evaluates every registered rule against a successfully
+// prepared value in deterministic statement and registration order. It checks
+// the caller context before prepared-value validity and before each rule,
+// returns the first failure, and emits exactly one terminal outcome.
+func (e *Engine) ValidatePrepared(ctx context.Context, prepared Prepared) error {
+	if err := ctx.Err(); err != nil {
+		return e.finishValidation(ValidationOutcomeCanceled, "", err)
+	}
+
+	if prepared.result == nil {
+		return e.finishValidation(ValidationOutcomeInvalidPrepared, "", ErrInvalidPrepared)
+	}
+
+	for _, root := range parser.StatementSequence(prepared.result) {
 		statement := newStatement(root)
 
 		for _, registration := range e.rules {

@@ -88,6 +88,39 @@ so comments and literals cannot imitate a `WHERE` clause. Any syntactically
 present predicate, including `WHERE TRUE`, satisfies these baseline rules;
 tautology analysis is outside their scope.
 
+## Prepared validation
+
+Use `Prepare` when an application repeatedly validates the same stable,
+parameterized SQL text. Preparation parses the complete SQL once and returns an
+opaque immutable value; it does not run rules or make an allow/deny decision.
+Each `ValidatePrepared` call checks its own context and evaluates the engine's
+current rules, so policy decisions are never reused:
+
+```go
+query := "UPDATE accounts SET active = $1 WHERE id = $2"
+
+prepared, err := engine.Prepare(ctx, query)
+if err != nil {
+	return err
+}
+
+if err := engine.ValidatePrepared(requestCtx, prepared); err != nil {
+	return err
+}
+```
+
+A successful prepared value can be copied, shared concurrently, and validated
+by a different engine. Its zero value is rejected with `ErrInvalidPrepared`.
+Preparation remains synchronous: malformed SQL and cancellation are reported
+by `Prepare`, while successful preparation emits no terminal observability
+outcome. `ValidatePrepared` emits the outcome for each actual policy decision.
+
+`Prepared` is SQLGuard's client-side parsed representation. It is unrelated to
+pgx or PostgreSQL server prepared statements and does not execute SQL or bind
+arguments. A prepared value retains parsed identifiers, literals, and byte
+values until it becomes unreachable, so prefer placeholders over embedding
+sensitive values and keep its lifetime bounded by the application.
+
 ## pgx example
 
 The compiling [pgx example](example/pgx) demonstrates a narrow validation
@@ -117,14 +150,30 @@ API has no compatibility guarantee. It protects only `Exec`, `Query`, and
 `QueryRow` calls made through `GuardedDB` with positional arguments. A rejected
 `QueryRow` reports its error from `Scan`, consistent with pgx behavior.
 
-Batch execution, prepared statement workflows, transactions (including nested
-transactions), `CopyFrom`, and direct use of the retained connection or pool
-are outside the example's validation boundary. Arguments implementing
+Batch execution, pgx or server prepared-statement workflows, transactions
+(including nested transactions), `CopyFrom`, and direct use of the retained
+connection or pool are outside the example's validation boundary. Arguments
+implementing
 `pgx.QueryRewriter` are rejected before validation or delegation, so
 `pgx.NamedArgs`, `pgx.StrictNamedArgs`, `pgx.StructArgs`, and
 `pgx.StrictStructArgs` are unsupported. Applications adopting this pattern
 remain responsible for ensuring every database path crosses their guarded
 boundary.
+
+## Prepared pgx cache example
+
+The compiling [prepared pgx example](example/pgx-prepared) wraps the same
+`Exec`, `Query`, and `QueryRow` subset with a bounded, concurrent exact-key LRU
+cache. A hit skips parsing but still calls `ValidatePrepared`; a miss calls
+`Prepare` and then `ValidatePrepared`. Stable parameterized SQL therefore
+shares one parsed representation while different positional argument values
+still receive a fresh policy evaluation.
+
+This package is also illustrative and has no production compatibility
+commitment. Its cache retains exact SQL keys and parsed values. Capacity and
+maximum SQL-key length are retention controls, not a heap quota, and eviction
+or garbage collection does not guarantee memory zeroization. See its package
+documentation for the complete privacy and unsupported-path boundary.
 
 ## Observability
 
@@ -230,9 +279,9 @@ engine, err := sqlguard.NewEngine(
 
 Every enabled record uses the message `sqlguard validation` and exactly the
 attributes `mode`, `outcome`, and `rule_id`. The levels are INFO for `allowed`,
-ERROR for `policy_violation` and `parser_failure`, and DEBUG for `canceled`.
-The adapter uses a clean background context so request-scoped values cannot
-reach the configured handler.
+ERROR for `policy_violation`, `parser_failure`, and `invalid_prepared`, and
+DEBUG for `canceled`. The adapter uses a clean background context so
+request-scoped values cannot reach the configured handler.
 
 Observability never receives SQL text, SQL arguments, literals, comments,
 tokens, credentials, secrets, parser diagnostics, returned errors, or caller
@@ -274,16 +323,18 @@ if errors.As(err, &violation) {
 }
 ```
 
-Public parser failures and violations contain only bounded categories or stable
-rule identifiers. Their error messages are constant, and they do not retain or
-unwrap raw parser diagnostics, SQL text, literals, comments, tokens,
-credentials, or secrets.
+Public parser failures, violations, and invalid-prepared failures contain only
+bounded categories or stable rule identifiers. Their error messages are
+constant, and they do not retain or unwrap raw parser diagnostics, SQL text,
+literals, comments, tokens, credentials, or secrets.
 
 ## Context and concurrency
 
-`Validate` passes the exact caller context to every rule and returns standard
-`context.Canceled` or `context.DeadlineExceeded` errors directly. Cancellation
-is checked before parsing, after parsing, and before every rule invocation.
+`Validate`, `Prepare`, and `ValidatePrepared` preserve caller cancellation.
+Direct and prepared validation pass the exact caller context to every rule and
+return standard `context.Canceled` or `context.DeadlineExceeded` errors
+directly. Cancellation is checked before parsing, after parsing, and before
+every rule invocation.
 
 The parser is a synchronous CGO call and cannot be interrupted after it starts.
 If cancellation occurs during parsing, it is observed immediately after the C
@@ -314,18 +365,28 @@ Run the validation benchmarks with allocation reporting:
 make bench
 ```
 
-The suite exposes three independently filterable benchmark groups:
+The core suite exposes four independently filterable benchmark groups:
 
 - `BenchmarkEngineValidateByComplexity` compares simple, medium,
   multi-statement, and nested-CTE SQL with the outcome and observability setup
   held constant.
+- `BenchmarkEngineValidatePreparedByComplexity` measures the same inputs after
+  preparation, with rule evaluation inside the timed loop and parsing outside
+  it.
 - `BenchmarkEngineValidateByOutcome` compares allowed, policy-violation, and
   parser-failure paths with observability disabled.
 - `BenchmarkEngineObservability` compares disabled, metrics-only, logger-only,
   and combined no-op observability sinks using the same allowed SQL input.
 
-Results are absolute `Validate` measurements reported as `ns/op`, `B/op`, and
-`allocs/op`. Present a complexity comparison as **Validation latency by SQL
-complexity**. The suite does not provide a synthetic "without SQLGuard"
-baseline; compare validation latency with latency measured in your own database
-path.
+The prepared pgx example additionally exposes
+`BenchmarkGuardedDBCache/hit` and `BenchmarkGuardedDBCache/miss`; the latter
+forces parsing and LRU eviction using SQL strings generated before timing.
+
+Results are absolute costs reported as `ns/op`, `B/op`, and `allocs/op`.
+Present the direct complexity comparison as **Validation latency by SQL
+complexity**. The difference between direct and prepared validation estimates
+parsing savings, while the cache benchmarks also include wrapper and cache
+overhead. None of these measurements include a database round trip or represent
+end-to-end query latency. The suite intentionally has no synthetic "without
+SQLGuard" baseline; compare its absolute validation cost with latency measured
+in your real database path.

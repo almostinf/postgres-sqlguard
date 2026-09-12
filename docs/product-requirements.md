@@ -46,14 +46,24 @@ Applications may also select and configure built-in rules through a
 `rules.yaml` file. The initial YAML configuration supports built-in rules only;
 custom rules continue to be registered through Go code.
 
+### Prepared validation
+
+Applications that repeatedly validate stable SQL may parse it once into an
+opaque SQLGuard prepared value and validate that value for each call. Preparing
+SQL must not make or cache a policy decision: every prepared validation uses
+the current caller context, engine rules, and observability configuration.
+Prepared values are client-side parsed representations and are distinct from
+pgx or PostgreSQL server prepared statements.
+
 ### Driver integration
 
 The core validator must not depend on pgx or any other database driver.
 
-The project provides a maintained, compiling pgx example that applies the same
-validator to the explicitly limited `Exec`, `Query`, and `QueryRow` execution
-paths. The example is illustrative: it is not an official production adapter
-and does not carry a stable API compatibility commitment.
+The project provides maintained, compiling pgx examples that apply the same
+validator to explicitly limited `Exec`, `Query`, and `QueryRow` execution
+paths. One demonstrates direct validation and one demonstrates a bounded cache
+of SQLGuard prepared values. Both are illustrative: they are not official
+production adapters and do not carry stable API compatibility commitments.
 
 Other drivers can integrate through the validator contract. The project may
 provide examples for those integrations without committing to maintain every
@@ -142,28 +152,35 @@ selected policy.
 Support for resolving third-party custom rules from YAML is outside the initial
 scope and may be proposed later.
 
-### pgx integration example
+### pgx integration examples
 
-The maintained pgx example must validate SQL before delegating its supported
+The maintained pgx examples must validate SQL before delegating their supported
 `Exec`, `Query`, and `QueryRow` operations. Rejected operations must not reach
 the underlying executor. Because `QueryRow` reports errors through row
-scanning, validation failures must remain discoverable through `Scan`.
+scanning, validation failures must remain discoverable through `Scan`. The
+prepared-cache example may reuse parsed structure but must evaluate policy for
+every call and keep caching outside the core validator.
 
 Any argument that can rewrite SQL after validation must be rejected before the
 validator or executor is called. This includes pgx `QueryRewriter`-based named
 and struct arguments; positional arguments are the supported example path.
 
-Batch execution, prepared statement workflows, transactions (including nested
-transactions), `CopyFrom`, and direct use of an unwrapped pgx connection or
-pool are outside the example's validation boundary. Applications adapting the
-example are responsible for ensuring that every execution path they intend to
-protect crosses their own guarded boundary.
+SQLGuard prepared values must be clearly distinguished from pgx and PostgreSQL
+server prepared statements. Executing a manually registered prepared statement
+by passing its name in place of SQL is unsupported because the executed text
+may differ from the validated string.
+
+Batch execution, transactions (including nested transactions), `CopyFrom`, and
+direct use of an unwrapped pgx connection, pool, or executor are outside the
+examples' validation boundaries. Applications adapting either example are
+responsible for ensuring that every execution path they intend to protect
+crosses their own guarded boundary.
 
 ### Errors
 
-Callers must be able to distinguish policy violations, parser failures, and
-underlying driver failures without parsing error messages. Wrapped errors must
-work with Go's standard error inspection mechanisms.
+Callers must be able to distinguish policy violations, parser failures, invalid
+prepared values, and underlying driver failures without parsing error messages.
+Wrapped errors must work with Go's standard error inspection mechanisms.
 
 Error messages must be safe to log and must not contain SQL text, SQL
 arguments, literal values, tokens, or secrets.
@@ -201,8 +218,8 @@ The first usable release includes:
 - typed, privacy-safe errors;
 - replaceable metrics and logging abstractions, plus official Prometheus and
   `log/slog` integrations;
-- a documented, compiling pgx integration example for its explicitly limited
-  execution paths;
+- documented, compiling direct and prepared-cache pgx integration examples for
+  their explicitly limited execution paths;
 - tests and benchmarks for the supported safety boundary.
 
 The MVP may require CGO. This constraint must be documented clearly for
@@ -228,10 +245,11 @@ No-CGO support must be introduced through a separate OpenSpec change.
 
 ### Conditional performance work
 
-Performance optimization begins with benchmarks. A validation cache may be
-introduced only when measurements show a useful benefit. It must be optional,
-bounded, concurrency-safe, and preserve validation correctness and privacy.
-Cache design belongs in the corresponding change design.
+Performance optimization begins with benchmarks. The core must not introduce
+an implicit validation cache. An application-level or illustrative validation
+cache must be optional, bounded, concurrency-safe, and preserve per-call
+validation correctness and privacy. Cache design belongs in the corresponding
+change design.
 
 ## 7. Product Boundaries and Non-Goals
 

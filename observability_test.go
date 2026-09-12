@@ -37,6 +37,13 @@ func TestValidationEvent(t *testing.T) {
 			wantMode:    "enforce",
 			wantOutcome: "parser_failure",
 		},
+		"invalid_prepared_has_no_rule_identifier": {
+			mode:        ValidationModeEnforce,
+			outcome:     ValidationOutcomeInvalidPrepared,
+			ruleID:      "ignored_rule",
+			wantMode:    "enforce",
+			wantOutcome: "invalid_prepared",
+		},
 		"policy_violation_preserves_rule_identifier": {
 			mode:        ValidationModeEnforce,
 			outcome:     ValidationOutcomePolicyViolation,

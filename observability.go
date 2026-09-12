@@ -30,6 +30,10 @@ const (
 	// ValidationOutcomeCanceled indicates that validation stopped because the
 	// caller context was canceled or its deadline expired.
 	ValidationOutcomeCanceled ValidationOutcome = "canceled"
+
+	// ValidationOutcomeInvalidPrepared indicates that prepared validation
+	// received a zero or otherwise invalid Prepared value.
+	ValidationOutcomeInvalidPrepared ValidationOutcome = "invalid_prepared"
 )
 
 // ValidationEvent is immutable bounded metadata for one terminal validation

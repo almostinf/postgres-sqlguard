@@ -35,6 +35,53 @@ type validationBenchmark struct {
 	expectedOutcome benchmarkOutcome
 }
 
+var validationComplexityBenchmarks = []struct {
+	name string
+	sql  string
+}{
+	{
+		name: "simple",
+		sql:  "SELECT 1",
+	},
+	{
+		name: "medium",
+		sql: `
+			SELECT accounts.id, count(orders.id)
+			FROM accounts
+			JOIN orders ON orders.account_id = accounts.id
+			WHERE accounts.active AND orders.created_at >= CURRENT_DATE - INTERVAL '30 days'
+			GROUP BY accounts.id
+			HAVING count(orders.id) > 1
+			ORDER BY accounts.id
+			LIMIT 100
+		`,
+	},
+	{
+		name: "multi_statement",
+		sql: `
+			SELECT 1;
+			UPDATE accounts SET active = false WHERE id = 42;
+			INSERT INTO audit_log (message) VALUES ('updated');
+			DELETE FROM sessions WHERE expired;
+		`,
+	},
+	{
+		name: "nested_cte",
+		sql: `
+			WITH changed AS (
+				WITH removed AS (
+					DELETE FROM sessions WHERE expired RETURNING account_id
+				)
+				UPDATE accounts SET active = false
+				FROM removed
+				WHERE accounts.id = removed.account_id
+				RETURNING accounts.*
+			)
+			SELECT * FROM changed;
+		`,
+	},
+}
+
 func runValidationBenchmark(b *testing.B, benchmark validationBenchmark) {
 	b.Helper()
 
@@ -52,6 +99,32 @@ func runValidationBenchmark(b *testing.B, benchmark validationBenchmark) {
 
 	for b.Loop() {
 		_ = engine.Validate(ctx, benchmark.sql)
+	}
+}
+
+func runPreparedValidationBenchmark(b *testing.B, benchmark validationBenchmark) {
+	b.Helper()
+
+	engine, err := sqlguard.NewEngine(benchmark.options, benchmark.rules...)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	prepared, err := engine.Prepare(ctx, benchmark.sql)
+	if err != nil {
+		b.Fatalf("prepare benchmark input: %v", err)
+	}
+
+	if err := engine.ValidatePrepared(ctx, prepared); !matchesBenchmarkOutcome(benchmark.expectedOutcome, err) {
+		b.Fatalf("unexpected validation outcome: want %d, got %T", benchmark.expectedOutcome, err)
+	}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = engine.ValidatePrepared(ctx, prepared)
 	}
 }
 
@@ -73,42 +146,22 @@ func matchesBenchmarkOutcome(expected benchmarkOutcome, err error) bool {
 }
 
 func BenchmarkEngineValidateByComplexity(b *testing.B) {
-	inputs := map[string]string{
-		"simple": "SELECT 1",
-		"medium": `
-			SELECT accounts.id, count(orders.id)
-			FROM accounts
-			JOIN orders ON orders.account_id = accounts.id
-			WHERE accounts.active AND orders.created_at >= CURRENT_DATE - INTERVAL '30 days'
-			GROUP BY accounts.id
-			HAVING count(orders.id) > 1
-			ORDER BY accounts.id
-			LIMIT 100
-		`,
-		"multi_statement": `
-			SELECT 1;
-			UPDATE accounts SET active = false WHERE id = 42;
-			INSERT INTO audit_log (message) VALUES ('updated');
-			DELETE FROM sessions WHERE expired;
-		`,
-		"nested_cte": `
-			WITH changed AS (
-				WITH removed AS (
-					DELETE FROM sessions WHERE expired RETURNING account_id
-				)
-				UPDATE accounts SET active = false
-				FROM removed
-				WHERE accounts.id = removed.account_id
-				RETURNING accounts.*
-			)
-			SELECT * FROM changed;
-		`,
-	}
-
-	for name, sql := range inputs {
-		b.Run(name, func(b *testing.B) {
+	for _, input := range validationComplexityBenchmarks {
+		b.Run(input.name, func(b *testing.B) {
 			runValidationBenchmark(b, validationBenchmark{
-				sql:             sql,
+				sql:             input.sql,
+				rules:           []sqlguard.Rule{&ruleStub{id: "benchmark_allow"}},
+				expectedOutcome: benchmarkOutcomeAllowed,
+			})
+		})
+	}
+}
+
+func BenchmarkEngineValidatePreparedByComplexity(b *testing.B) {
+	for _, input := range validationComplexityBenchmarks {
+		b.Run(input.name, func(b *testing.B) {
+			runPreparedValidationBenchmark(b, validationBenchmark{
+				sql:             input.sql,
 				rules:           []sqlguard.Rule{&ruleStub{id: "benchmark_allow"}},
 				expectedOutcome: benchmarkOutcomeAllowed,
 			})

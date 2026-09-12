@@ -135,6 +135,22 @@ func TestMetricsUsesCustomMetricName(t *testing.T) {
 	require.Equal(t, "payments_sql_checks_total", families[0].GetName())
 }
 
+func TestMetricsRecordsInvalidPrepared(t *testing.T) {
+	registry := prometheusclient.NewRegistry()
+	metrics := mustNewMetrics(t, registry, "payments_api", "")
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics})
+	require.NoError(t, err)
+
+	err = engine.ValidatePrepared(context.Background(), sqlguard.Prepared{})
+	require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+	requireCounter(t, registry, defaultMetricName, map[string]string{
+		"service": "payments_api",
+		"mode":    "enforce",
+		"outcome": "invalid_prepared",
+		"rule_id": "",
+	}, 1)
+}
+
 func TestMetricsKeepsServiceFixedAcrossOutcomes(t *testing.T) {
 	registry := prometheusclient.NewRegistry()
 	metrics := mustNewMetrics(t, registry, "ledger_worker", "")

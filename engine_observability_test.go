@@ -181,6 +181,250 @@ func TestEngineIsolatesObservabilityFailures(t *testing.T) {
 	}
 }
 
+func TestEngineIsolatesPreparedObservabilityFailures(t *testing.T) {
+	sinkFailure := errors.New("observability unavailable")
+
+	tests := map[string]struct {
+		metrics    *recordingMetrics
+		logger     *recordingLogger
+		validate   func(context.Context, *sqlguard.Engine) error
+		want       validationEventExpectation
+		checkError func(t *testing.T, err error)
+	}{
+		"metrics_error_preserves_preparation_parser_failure": {
+			metrics: &recordingMetrics{failure: sinkFailure},
+			logger:  &recordingLogger{},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				_, err := engine.Prepare(ctx, "SELECT * FROM")
+
+				return err
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeParserFailure,
+			},
+			checkError: requireParseFailure,
+		},
+		"metrics_panic_preserves_preparation_parser_failure": {
+			metrics: &recordingMetrics{panicValue: "metrics panic"},
+			logger:  &recordingLogger{},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				_, err := engine.Prepare(ctx, "SELECT * FROM")
+
+				return err
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeParserFailure,
+			},
+			checkError: requireParseFailure,
+		},
+		"logger_error_preserves_preparation_parser_failure": {
+			metrics: &recordingMetrics{},
+			logger:  &recordingLogger{failure: sinkFailure},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				_, err := engine.Prepare(ctx, "SELECT * FROM")
+
+				return err
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeParserFailure,
+			},
+			checkError: requireParseFailure,
+		},
+		"logger_panic_preserves_preparation_parser_failure": {
+			metrics: &recordingMetrics{},
+			logger:  &recordingLogger{panicValue: "logger panic"},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				_, err := engine.Prepare(ctx, "SELECT * FROM")
+
+				return err
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeParserFailure,
+			},
+			checkError: requireParseFailure,
+		},
+		"metrics_error_preserves_invalid_prepared": {
+			metrics: &recordingMetrics{failure: sinkFailure},
+			logger:  &recordingLogger{},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				return engine.ValidatePrepared(ctx, sqlguard.Prepared{})
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeInvalidPrepared,
+			},
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+			},
+		},
+		"metrics_panic_preserves_invalid_prepared": {
+			metrics: &recordingMetrics{panicValue: "metrics panic"},
+			logger:  &recordingLogger{},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				return engine.ValidatePrepared(ctx, sqlguard.Prepared{})
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeInvalidPrepared,
+			},
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+			},
+		},
+		"logger_error_preserves_invalid_prepared": {
+			metrics: &recordingMetrics{},
+			logger:  &recordingLogger{failure: sinkFailure},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				return engine.ValidatePrepared(ctx, sqlguard.Prepared{})
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeInvalidPrepared,
+			},
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+			},
+		},
+		"logger_panic_preserves_invalid_prepared": {
+			metrics: &recordingMetrics{},
+			logger:  &recordingLogger{panicValue: "logger panic"},
+			validate: func(ctx context.Context, engine *sqlguard.Engine) error {
+				return engine.ValidatePrepared(ctx, sqlguard.Prepared{})
+			},
+			want: validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeInvalidPrepared,
+			},
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.ErrorIs(t, err, sqlguard.ErrInvalidPrepared)
+			},
+		},
+	}
+
+	for name, testCase := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{
+				Metrics: testCase.metrics,
+				Logger:  testCase.logger,
+			})
+			require.NoError(t, err)
+
+			err = testCase.validate(context.Background(), engine)
+			testCase.checkError(t, err)
+			requireSingleValidationEvent(t, testCase.metrics.Events(), testCase.want)
+			requireSingleValidationEvent(t, testCase.logger.Events(), testCase.want)
+		})
+	}
+}
+
+func TestEnginePreparedOutcomeEmission(t *testing.T) {
+	metrics := &recordingMetrics{}
+	logger := &recordingLogger{}
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics, Logger: logger})
+	require.NoError(t, err)
+
+	prepared, err := engine.Prepare(context.Background(), "SELECT 1")
+	require.NoError(t, err)
+	require.Empty(t, metrics.Events())
+	require.Empty(t, logger.Events())
+
+	require.NoError(t, engine.ValidatePrepared(context.Background(), prepared))
+
+	want := validationEventExpectation{
+		mode:    sqlguard.ValidationModeEnforce,
+		outcome: sqlguard.ValidationOutcomeAllowed,
+	}
+	requireSingleValidationEvent(t, metrics.Events(), want)
+	requireSingleValidationEvent(t, logger.Events(), want)
+}
+
+func TestEnginePreparationOutcomeEmission(t *testing.T) {
+	tests := map[string]struct {
+		ctx        func() context.Context
+		input      string
+		want       *validationEventExpectation
+		checkError func(t *testing.T, err error)
+	}{
+		"cancellation_emits_once": {
+			ctx: func() context.Context {
+				ctx, cancel := context.WithCancel(context.Background())
+				cancel()
+
+				return ctx
+			},
+			input: "SELECT 1",
+			want: &validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeCanceled,
+			},
+			checkError: requireContextError(context.Canceled),
+		},
+		"parser_failure_emits_once": {
+			ctx:   context.Background,
+			input: "SELECT * FROM",
+			want: &validationEventExpectation{
+				mode:    sqlguard.ValidationModeEnforce,
+				outcome: sqlguard.ValidationOutcomeParserFailure,
+			},
+			checkError: requireParseFailure,
+		},
+	}
+
+	for name, testCase := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			metrics := &recordingMetrics{}
+			logger := &recordingLogger{}
+			engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics, Logger: logger})
+			require.NoError(t, err)
+
+			_, err = engine.Prepare(testCase.ctx(), testCase.input)
+			testCase.checkError(t, err)
+
+			if testCase.want == nil {
+				require.Empty(t, metrics.Events())
+				require.Empty(t, logger.Events())
+
+				return
+			}
+
+			requireSingleValidationEvent(t, metrics.Events(), *testCase.want)
+			requireSingleValidationEvent(t, logger.Events(), *testCase.want)
+		})
+	}
+}
+
+func TestEngineValidateDoesNotDoubleCountPreparedPhases(t *testing.T) {
+	metrics := &recordingMetrics{}
+	logger := &recordingLogger{}
+	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics, Logger: logger})
+	require.NoError(t, err)
+
+	require.NoError(t, engine.Validate(context.Background(), "SELECT 1"))
+
+	want := validationEventExpectation{
+		mode:    sqlguard.ValidationModeEnforce,
+		outcome: sqlguard.ValidationOutcomeAllowed,
+	}
+	requireSingleValidationEvent(t, metrics.Events(), want)
+	requireSingleValidationEvent(t, logger.Events(), want)
+}
+
 func (l *recordingLogger) Events() []sqlguard.ValidationEvent {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()

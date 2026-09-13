@@ -26,6 +26,11 @@ func FuzzEngineValidate(f *testing.F) {
 		"SELECT * FROM",
 		"SELECT 1; SELECT * FROM",
 		"unterminated 'literal",
+		"SELECT \x00",
+		"SELECT $-1",
+		"SELECT $body$unfinished",
+		"/* outer /* inner */",
+		strings.Repeat("(", 256) + "SELECT 1",
 	} {
 		f.Add(seed)
 	}

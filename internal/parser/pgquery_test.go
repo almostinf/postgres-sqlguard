@@ -97,6 +97,11 @@ func TestParse(t *testing.T) {
 			checkResult: requireNilResult,
 			checkError:  requireSyntaxError,
 		},
+		"rejects_an_embedded_nul_byte": {
+			input:       "SELECT \x00",
+			checkResult: requireNilResult,
+			checkError:  requireSyntaxError,
+		},
 		"sanitizes_backend_parser_diagnostics": {
 			input:       "sqlguard_secret_token_6f914c",
 			checkResult: requireNilResult,

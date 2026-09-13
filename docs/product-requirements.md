@@ -225,21 +225,22 @@ The first usable release includes:
 The MVP may require CGO. This constraint must be documented clearly for
 consumers.
 
-### Stage 2: Audit mode
+After the enforce MVP, audit mode and no-CGO support are independently
+deliverable required product stages. Neither is a prerequisite for the other.
 
-Audit mode is the required next product stage after the enforce MVP. It allows
-execution to continue while reporting a privacy-safe finding for policy
-violations or parser failures, according to the audit specification.
+### Required stage: Audit mode
+
+Audit mode allows execution to continue while reporting a privacy-safe finding
+for policy violations or parser failures, according to the audit specification.
 
 Audit mode must reuse the same parser and rule behavior as enforce mode. It
 must not introduce SQL logging or an inline query bypass mechanism.
 
-### Stage 3: No-CGO support
+### Required stage: No-CGO support
 
-A later stage evaluates and, if viable, provides a supported parser backend for
-`CGO_ENABLED=0` environments. It may be proposed only after audit mode is
-delivered. The backend must preserve the same product-level validation
-guarantees and rule semantics.
+This stage evaluates and, if viable, provides a supported parser backend for
+`CGO_ENABLED=0` environments. The backend must preserve the same product-level
+validation guarantees, privacy constraints, and rule semantics.
 
 No-CGO support must be introduced through a separate OpenSpec change.
 

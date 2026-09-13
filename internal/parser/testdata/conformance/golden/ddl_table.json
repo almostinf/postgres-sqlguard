@@ -1,0 +1,1039 @@
+{
+  "statements": [
+    {
+      "kind": "CreateStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_events"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "13"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "table_elts",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ColumnDef",
+                  "fields": [
+                    {
+                      "name": "colname",
+                      "value": {
+                        "kind": "string",
+                        "value": "event_id"
+                      }
+                    },
+                    {
+                      "name": "type_name",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "pg_catalog"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "int8"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "45"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "is_local",
+                      "value": {
+                        "kind": "bool",
+                        "value": true
+                      }
+                    },
+                    {
+                      "name": "constraints",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_IDENTITY"
+                                  }
+                                },
+                                {
+                                  "name": "generated_when",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "a"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "52"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_PRIMARY"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "81"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "36"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ColumnDef",
+                  "fields": [
+                    {
+                      "name": "colname",
+                      "value": {
+                        "kind": "string",
+                        "value": "tenant_id"
+                      }
+                    },
+                    {
+                      "name": "type_name",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "pg_catalog"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "int8"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "108"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "is_local",
+                      "value": {
+                        "kind": "bool",
+                        "value": true
+                      }
+                    },
+                    {
+                      "name": "constraints",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_NOTNULL"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "115"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "98"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ColumnDef",
+                  "fields": [
+                    {
+                      "name": "colname",
+                      "value": {
+                        "kind": "string",
+                        "value": "payload"
+                      }
+                    },
+                    {
+                      "name": "type_name",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "jsonb"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "137"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "is_local",
+                      "value": {
+                        "kind": "bool",
+                        "value": true
+                      }
+                    },
+                    {
+                      "name": "constraints",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_NOTNULL"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "143"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_DEFAULT"
+                                  }
+                                },
+                                {
+                                  "name": "raw_expr",
+                                  "value": {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "TypeCast",
+                                      "fields": [
+                                        {
+                                          "name": "arg",
+                                          "value": {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "{}"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "160"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "name": "type_name",
+                                          "value": {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "TypeName",
+                                              "fields": [
+                                                {
+                                                  "name": "names",
+                                                  "value": {
+                                                    "kind": "list",
+                                                    "value": [
+                                                      {
+                                                        "kind": "node",
+                                                        "value": {
+                                                          "kind": "String",
+                                                          "fields": [
+                                                            {
+                                                              "name": "sval",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "jsonb"
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                {
+                                                  "name": "typemod",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "-1"
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "166"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "name": "location",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "164"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "152"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "129"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ColumnDef",
+                  "fields": [
+                    {
+                      "name": "colname",
+                      "value": {
+                        "kind": "string",
+                        "value": "created_at"
+                      }
+                    },
+                    {
+                      "name": "type_name",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "pg_catalog"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "timestamptz"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "188"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "is_local",
+                      "value": {
+                        "kind": "bool",
+                        "value": true
+                      }
+                    },
+                    {
+                      "name": "constraints",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_NOTNULL"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "213"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_DEFAULT"
+                                  }
+                                },
+                                {
+                                  "name": "raw_expr",
+                                  "value": {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "SQLValueFunction",
+                                      "fields": [
+                                        {
+                                          "name": "op",
+                                          "value": {
+                                            "kind": "enum",
+                                            "value": "SVFOP_CURRENT_TIMESTAMP"
+                                          }
+                                        },
+                                        {
+                                          "name": "typmod",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "-1"
+                                          }
+                                        },
+                                        {
+                                          "name": "location",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "230"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "222"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "177"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ColumnDef",
+                  "fields": [
+                    {
+                      "name": "colname",
+                      "value": {
+                        "kind": "string",
+                        "value": "period"
+                      }
+                    },
+                    {
+                      "name": "type_name",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "tstzrange"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "260"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "is_local",
+                      "value": {
+                        "kind": "bool",
+                        "value": true
+                      }
+                    },
+                    {
+                      "name": "constraints",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Constraint",
+                              "fields": [
+                                {
+                                  "name": "contype",
+                                  "value": {
+                                    "kind": "enum",
+                                    "value": "CONSTR_NOTNULL"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "270"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "253"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "Constraint",
+                  "fields": [
+                    {
+                      "name": "contype",
+                      "value": {
+                        "kind": "enum",
+                        "value": "CONSTR_EXCLUSION"
+                      }
+                    },
+                    {
+                      "name": "exclusions",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "List",
+                              "fields": [
+                                {
+                                  "name": "items",
+                                  "value": {
+                                    "kind": "list",
+                                    "value": [
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "IndexElem",
+                                          "fields": [
+                                            {
+                                              "name": "name",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "tenant_id"
+                                              }
+                                            },
+                                            {
+                                              "name": "ordering",
+                                              "value": {
+                                                "kind": "enum",
+                                                "value": "SORTBY_DEFAULT"
+                                              }
+                                            },
+                                            {
+                                              "name": "nulls_ordering",
+                                              "value": {
+                                                "kind": "enum",
+                                                "value": "SORTBY_NULLS_DEFAULT"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "List",
+                                          "fields": [
+                                            {
+                                              "name": "items",
+                                              "value": {
+                                                "kind": "list",
+                                                "value": [
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "="
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "List",
+                              "fields": [
+                                {
+                                  "name": "items",
+                                  "value": {
+                                    "kind": "list",
+                                    "value": [
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "IndexElem",
+                                          "fields": [
+                                            {
+                                              "name": "name",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "period"
+                                              }
+                                            },
+                                            {
+                                              "name": "ordering",
+                                              "value": {
+                                                "kind": "enum",
+                                                "value": "SORTBY_DEFAULT"
+                                              }
+                                            },
+                                            {
+                                              "name": "nulls_ordering",
+                                              "value": {
+                                                "kind": "enum",
+                                                "value": "SORTBY_NULLS_DEFAULT"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "List",
+                                          "fields": [
+                                            {
+                                              "name": "items",
+                                              "value": {
+                                                "kind": "list",
+                                                "value": [
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "&&"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "access_method",
+                      "value": {
+                        "kind": "string",
+                        "value": "gist"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "284"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "oncommit",
+          "value": {
+            "kind": "enum",
+            "value": "ONCOMMIT_NOOP"
+          }
+        }
+      ]
+    }
+  ]
+}

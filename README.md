@@ -7,11 +7,18 @@ input with a real PostgreSQL grammar and does not require a database connection.
 ## Requirements
 
 - Go 1.26;
-- CGO enabled;
-- a working C compiler available through `CC`.
+- for the default `CGO_ENABLED=1` build, a working C compiler available through
+  `CC`;
+- or `CGO_ENABLED=0` for the automatically selected WebAssembly backend, with
+  no C compiler or custom build tag required.
 
-The pinned `pg_query_go` parser embeds the PostgreSQL 17 grammar. Compatibility
-with other PostgreSQL major versions is not implied.
+Both backends embed the PostgreSQL 17 grammar and preserve the same public API,
+parser-neutral AST semantics, rule results, typed failures, and observability
+behavior. Compatibility with other PostgreSQL major versions is not implied.
+CGO remains the faster and smaller default; no-CGO trades cold-start time,
+memory, and binary size for simpler builds and cross-compilation. TinyGo is not
+supported. See [Parser backends](docs/parser-backends.md) for the candidate
+comparison, supported matrix, measurements, and reproducible commands.
 
 ## Usage
 
@@ -336,9 +343,10 @@ return standard `context.Canceled` or `context.DeadlineExceeded` errors
 directly. Cancellation is checked before parsing, after parsing, and before
 every rule invocation.
 
-The parser is a synchronous CGO call and cannot be interrupted after it starts.
-If cancellation occurs during parsing, it is observed immediately after the C
-call returns. Parsing is not moved to a background goroutine.
+Parsing is synchronous in both build modes and cannot be interrupted after it
+starts. If cancellation occurs during parsing, it is observed immediately
+after the selected backend returns. Parsing is not moved to a background
+goroutine.
 
 An initialized Engine is safe for concurrent use. A registered Rule instance
 can be invoked concurrently by separate validations, so custom rules must be
@@ -350,6 +358,7 @@ Run the standard checks:
 
 ```sh
 make precommit
+make precommit-all # CGO and no-CGO
 ```
 
 Run the validator fuzz target:
@@ -363,6 +372,8 @@ Run the validation benchmarks with allocation reporting:
 
 ```sh
 make bench
+make bench-cgo
+make bench-no-cgo
 ```
 
 The core suite exposes four independently filterable benchmark groups:

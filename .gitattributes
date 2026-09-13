@@ -1,0 +1,2 @@
+internal/parser/testdata/conformance/**/*.sql text eol=lf
+internal/parser/testdata/conformance/golden/**/*.json text eol=lf

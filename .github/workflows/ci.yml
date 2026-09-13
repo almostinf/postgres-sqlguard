@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   precommit:
-    name: Precommit
+    name: Precommit (CGO)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -39,4 +39,26 @@ jobs:
           sudo apt-get install --yes --no-install-recommends build-essential
 
       - name: Run precommit gate
-        run: make precommit
+        run: make precommit-cgo
+
+  precommit-no-cgo:
+    name: Precommit (no CGO)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CGO_ENABLED: "0"
+      CC: /definitely/missing/postgres-sqlguard-cc
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Run no-CGO precommit gate without a C toolchain
+        run: make precommit-no-cgo

@@ -1,0 +1,1942 @@
+{
+  "statements": [
+    {
+      "kind": "SelectStmt",
+      "fields": [
+        {
+          "name": "target_list",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "parameter_value"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeCast",
+                          "fields": [
+                            {
+                              "name": "arg",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "ParamRef",
+                                  "fields": [
+                                    {
+                                      "name": "number",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "1"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "11"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "type_name",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "TypeName",
+                                  "fields": [
+                                    {
+                                      "name": "names",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "pg_catalog"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "int4"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "typemod",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "-1"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "15"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "13"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "11"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "array_contains"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Expr",
+                          "fields": [
+                            {
+                              "name": "kind",
+                              "value": {
+                                "kind": "enum",
+                                "value": "AEXPR_OP"
+                              }
+                            },
+                            {
+                              "name": "name",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "@>"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "lexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "TypeCast",
+                                  "fields": [
+                                    {
+                                      "name": "arg",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "A_ArrayExpr",
+                                          "fields": [
+                                            {
+                                              "name": "elements",
+                                              "value": {
+                                                "kind": "list",
+                                                "value": [
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "A_Const",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "node",
+                                                            "value": {
+                                                              "kind": "Integer",
+                                                              "fields": [
+                                                                {
+                                                                  "name": "ival",
+                                                                  "value": {
+                                                                    "kind": "int",
+                                                                    "value": "1"
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        },
+                                                        {
+                                                          "name": "location",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "53"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "A_Const",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "node",
+                                                            "value": {
+                                                              "kind": "Integer",
+                                                              "fields": [
+                                                                {
+                                                                  "name": "ival",
+                                                                  "value": {
+                                                                    "kind": "int",
+                                                                    "value": "2"
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        },
+                                                        {
+                                                          "name": "location",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "56"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "A_Const",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "node",
+                                                            "value": {
+                                                              "kind": "Integer",
+                                                              "fields": [
+                                                                {
+                                                                  "name": "ival",
+                                                                  "value": {
+                                                                    "kind": "int",
+                                                                    "value": "3"
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        },
+                                                        {
+                                                          "name": "location",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "59"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "name": "location",
+                                              "value": {
+                                                "kind": "int",
+                                                "value": "47"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "type_name",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "TypeName",
+                                          "fields": [
+                                            {
+                                              "name": "names",
+                                              "value": {
+                                                "kind": "list",
+                                                "value": [
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "pg_catalog"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "int4"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "name": "typemod",
+                                              "value": {
+                                                "kind": "int",
+                                                "value": "-1"
+                                              }
+                                            },
+                                            {
+                                              "name": "array_bounds",
+                                              "value": {
+                                                "kind": "list",
+                                                "value": [
+                                                  {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "Integer",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "-1"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            {
+                                              "name": "location",
+                                              "value": {
+                                                "kind": "int",
+                                                "value": "63"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "61"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "rexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_ArrayExpr",
+                                  "fields": [
+                                    {
+                                      "name": "elements",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "ival",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "Integer",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "2"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "82"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "76"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "73"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "47"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "json_operator"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Expr",
+                          "fields": [
+                            {
+                              "name": "kind",
+                              "value": {
+                                "kind": "enum",
+                                "value": "AEXPR_OP"
+                              }
+                            },
+                            {
+                              "name": "name",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "="
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "lexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_Expr",
+                                  "fields": [
+                                    {
+                                      "name": "kind",
+                                      "value": {
+                                        "kind": "enum",
+                                        "value": "AEXPR_OP"
+                                      }
+                                    },
+                                    {
+                                      "name": "name",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "->>"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "lexpr",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "TypeCast",
+                                          "fields": [
+                                            {
+                                              "name": "arg",
+                                              "value": {
+                                                "kind": "node",
+                                                "value": {
+                                                  "kind": "A_Const",
+                                                  "fields": [
+                                                    {
+                                                      "name": "sval",
+                                                      "value": {
+                                                        "kind": "node",
+                                                        "value": {
+                                                          "kind": "String",
+                                                          "fields": [
+                                                            {
+                                                              "name": "sval",
+                                                              "value": {
+                                                                "kind": "string",
+                                                                "value": "{\"key\":\"value\"}"
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    },
+                                                    {
+                                                      "name": "location",
+                                                      "value": {
+                                                        "kind": "int",
+                                                        "value": "109"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "name": "type_name",
+                                              "value": {
+                                                "kind": "node",
+                                                "value": {
+                                                  "kind": "TypeName",
+                                                  "fields": [
+                                                    {
+                                                      "name": "names",
+                                                      "value": {
+                                                        "kind": "list",
+                                                        "value": [
+                                                          {
+                                                            "kind": "node",
+                                                            "value": {
+                                                              "kind": "String",
+                                                              "fields": [
+                                                                {
+                                                                  "name": "sval",
+                                                                  "value": {
+                                                                    "kind": "string",
+                                                                    "value": "jsonb"
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    },
+                                                    {
+                                                      "name": "typemod",
+                                                      "value": {
+                                                        "kind": "int",
+                                                        "value": "-1"
+                                                      }
+                                                    },
+                                                    {
+                                                      "name": "location",
+                                                      "value": {
+                                                        "kind": "int",
+                                                        "value": "128"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "name": "location",
+                                              "value": {
+                                                "kind": "int",
+                                                "value": "126"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "rexpr",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "A_Const",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "node",
+                                                "value": {
+                                                  "kind": "String",
+                                                  "fields": [
+                                                    {
+                                                      "name": "sval",
+                                                      "value": {
+                                                        "kind": "string",
+                                                        "value": "key"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "name": "location",
+                                              "value": {
+                                                "kind": "int",
+                                                "value": "138"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "134"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "rexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_Const",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "value"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "147"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "145"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "108"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "row_comparison"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Expr",
+                          "fields": [
+                            {
+                              "name": "kind",
+                              "value": {
+                                "kind": "enum",
+                                "value": "AEXPR_DISTINCT"
+                              }
+                            },
+                            {
+                              "name": "name",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "="
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "lexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "RowExpr",
+                                  "fields": [
+                                    {
+                                      "name": "args",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "ival",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "Integer",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "1"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "181"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "two"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "184"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "isnull",
+                                                  "value": {
+                                                    "kind": "bool",
+                                                    "value": true
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "191"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "row_format",
+                                      "value": {
+                                        "kind": "enum",
+                                        "value": "COERCE_EXPLICIT_CALL"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "177"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "rexpr",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "RowExpr",
+                                  "fields": [
+                                    {
+                                      "name": "args",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "ival",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "Integer",
+                                                      "fields": [
+                                                        {
+                                                          "name": "ival",
+                                                          "value": {
+                                                            "kind": "int",
+                                                            "value": "2"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "218"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "node",
+                                                    "value": {
+                                                      "kind": "String",
+                                                      "fields": [
+                                                        {
+                                                          "name": "sval",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "two"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "221"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "A_Const",
+                                              "fields": [
+                                                {
+                                                  "name": "isnull",
+                                                  "value": {
+                                                    "kind": "bool",
+                                                    "value": true
+                                                  }
+                                                },
+                                                {
+                                                  "name": "location",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "228"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "row_format",
+                                      "value": {
+                                        "kind": "enum",
+                                        "value": "COERCE_EXPLICIT_CALL"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "214"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "197"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "177"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "boolval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Boolean",
+                                  "fields": [
+                                    {
+                                      "name": "boolval",
+                                      "value": {
+                                        "kind": "bool",
+                                        "value": true
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "257"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "257"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "boolval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Boolean",
+                                  "fields": []
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "267"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "267"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "isnull",
+                              "value": {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "278"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "278"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "ival",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Integer",
+                                  "fields": [
+                                    {
+                                      "name": "ival",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "42"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "288"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "288"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "ival",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Integer",
+                                  "fields": [
+                                    {
+                                      "name": "ival",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "-7"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "296"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "296"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "fval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Float",
+                                  "fields": [
+                                    {
+                                      "name": "fval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "3.1415"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "304"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "304"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "fval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Float",
+                                  "fields": [
+                                    {
+                                      "name": "fval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "6.02e23"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "316"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "316"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "bsval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "BitString",
+                                  "fields": [
+                                    {
+                                      "name": "bsval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "b1010"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "329"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "329"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "bsval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "BitString",
+                                  "fields": [
+                                    {
+                                      "name": "bsval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "xDEAD"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "342"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "342"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeCast",
+                          "fields": [
+                            {
+                              "name": "arg",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_Const",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "2026-01-02"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "360"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "type_name",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "TypeName",
+                                  "fields": [
+                                    {
+                                      "name": "names",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "date"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "typemod",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "-1"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "355"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "355"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeCast",
+                          "fields": [
+                            {
+                              "name": "arg",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_Const",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "2026-01-02 03:04:05+00"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "403"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "type_name",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "TypeName",
+                                  "fields": [
+                                    {
+                                      "name": "names",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "pg_catalog"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "timestamptz"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "typemod",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "-1"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "378"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "378"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeCast",
+                          "fields": [
+                            {
+                              "name": "arg",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "A_Const",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "2 days 3 hours"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "442"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "type_name",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "TypeName",
+                                  "fields": [
+                                    {
+                                      "name": "names",
+                                      "value": {
+                                        "kind": "list",
+                                        "value": [
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "pg_catalog"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "interval"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "typemod",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "-1"
+                                      }
+                                    },
+                                    {
+                                      "name": "location",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "433"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "433"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "limit_option",
+          "value": {
+            "kind": "enum",
+            "value": "LIMIT_OPTION_DEFAULT"
+          }
+        },
+        {
+          "name": "op",
+          "value": {
+            "kind": "enum",
+            "value": "SETOP_NONE"
+          }
+        }
+      ]
+    }
+  ]
+}

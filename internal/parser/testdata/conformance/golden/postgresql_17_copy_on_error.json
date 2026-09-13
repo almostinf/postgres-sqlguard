@@ -1,0 +1,296 @@
+{
+  "statements": [
+    {
+      "kind": "CopyStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_imports"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "5"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "attlist",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "String",
+                  "fields": [
+                    {
+                      "name": "sval",
+                      "value": {
+                        "kind": "string",
+                        "value": "account_id"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "String",
+                  "fields": [
+                    {
+                      "name": "sval",
+                      "value": {
+                        "kind": "string",
+                        "value": "display_name"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "is_from",
+          "value": {
+            "kind": "bool",
+            "value": true
+          }
+        },
+        {
+          "name": "filename",
+          "value": {
+            "kind": "string",
+            "value": "/tmp/sqlguard-synthetic-import.csv"
+          }
+        },
+        {
+          "name": "options",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "format"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "csv"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "98"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "header"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "true"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "110"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "on_error"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "ignore"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "123"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "log_verbosity"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "verbose"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "140"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

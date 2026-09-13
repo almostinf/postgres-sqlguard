@@ -1,0 +1,89 @@
+{
+  "statements": [
+    {
+      "kind": "SelectStmt",
+      "fields": [
+        {
+          "name": "target_list",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "value"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "ival",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Integer",
+                                  "fields": [
+                                    {
+                                      "name": "ival",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "1"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "82"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "82"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "limit_option",
+          "value": {
+            "kind": "enum",
+            "value": "LIMIT_OPTION_DEFAULT"
+          }
+        },
+        {
+          "name": "op",
+          "value": {
+            "kind": "enum",
+            "value": "SETOP_NONE"
+          }
+        }
+      ]
+    }
+  ]
+}

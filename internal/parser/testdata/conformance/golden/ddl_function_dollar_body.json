@@ -1,0 +1,698 @@
+{
+  "statements": [
+    {
+      "kind": "CreateFunctionStmt",
+      "fields": [
+        {
+          "name": "funcname",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "String",
+                  "fields": [
+                    {
+                      "name": "sval",
+                      "value": {
+                        "kind": "string",
+                        "value": "imaginary_increment"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "parameters",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "FunctionParameter",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "value"
+                      }
+                    },
+                    {
+                      "name": "arg_type",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "pg_catalog"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "int4"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "42"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "value": {
+                        "kind": "enum",
+                        "value": "FUNC_PARAM_DEFAULT"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "return_type",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "TypeName",
+              "fields": [
+                {
+                  "name": "names",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "pg_catalog"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "int4"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "typemod",
+                  "value": {
+                    "kind": "int",
+                    "value": "-1"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "59"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "options",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "language"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "sql"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "67"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "volatility"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "immutable"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "80"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "sql_body",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "ReturnStmt",
+              "fields": [
+                {
+                  "name": "returnval",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "A_Expr",
+                      "fields": [
+                        {
+                          "name": "kind",
+                          "value": {
+                            "kind": "enum",
+                            "value": "AEXPR_OP"
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "value": {
+                            "kind": "list",
+                            "value": [
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "+"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "lexpr",
+                          "value": {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ColumnRef",
+                              "fields": [
+                                {
+                                  "name": "fields",
+                                  "value": {
+                                    "kind": "list",
+                                    "value": [
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "value"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "97"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "name": "rexpr",
+                          "value": {
+                            "kind": "node",
+                            "value": {
+                              "kind": "A_Const",
+                              "fields": [
+                                {
+                                  "name": "ival",
+                                  "value": {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "Integer",
+                                      "fields": [
+                                        {
+                                          "name": "ival",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "1"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "105"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "103"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "CreateFunctionStmt",
+      "fields": [
+        {
+          "name": "funcname",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "String",
+                  "fields": [
+                    {
+                      "name": "sval",
+                      "value": {
+                        "kind": "string",
+                        "value": "imaginary_label"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "parameters",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "FunctionParameter",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "value"
+                      }
+                    },
+                    {
+                      "name": "arg_type",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "TypeName",
+                          "fields": [
+                            {
+                              "name": "names",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "text"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "typemod",
+                              "value": {
+                                "kind": "int",
+                                "value": "-1"
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "147"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "mode",
+                      "value": {
+                        "kind": "enum",
+                        "value": "FUNC_PARAM_DEFAULT"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "return_type",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "TypeName",
+              "fields": [
+                {
+                  "name": "names",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "text"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "typemod",
+                  "value": {
+                    "kind": "int",
+                    "value": "-1"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "161"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "options",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "language"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "plpgsql"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "166"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "DefElem",
+                  "fields": [
+                    {
+                      "name": "defname",
+                      "value": {
+                        "kind": "string",
+                        "value": "as"
+                      }
+                    },
+                    {
+                      "name": "arg",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "List",
+                          "fields": [
+                            {
+                              "name": "items",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "String",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "string",
+                                            "value": "\nBEGIN\n    RETURN 'label:' || value;\nEND\n"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "defaction",
+                      "value": {
+                        "kind": "enum",
+                        "value": "DEFELEM_UNSPEC"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "183"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,7 +29,15 @@ Each rule SHALL expose a stable, non-empty identifier suitable for programmatic 
 - **THEN** construction fails with an error that identifies the duplicate identifier without including SQL data
 
 ### Requirement: Consistent parsed representation
-Rules SHALL evaluate a structured statement representation produced by the engine's PostgreSQL parser. Within one validation call, every rule evaluating the same statement MUST receive a consistent interpretation of that statement, and adding a custom rule MUST NOT require changes to the parser or engine.
+Rules SHALL evaluate a structured, parser-neutral statement representation
+produced by the engine's supported PostgreSQL parser backend. Within one
+validation call, every rule evaluating the same statement MUST receive a
+consistent interpretation of that statement. Across CGO and no-CGO builds, the
+same successfully parsed input MUST expose semantically equivalent statement
+kinds, field presence and names, value kinds and semantic values, and ordered
+lists through the public rule contract. Adding a custom rule MUST NOT require
+changes to the parser or engine and MUST NOT require knowledge of the active
+parser backend.
 
 #### Scenario: Rules share one statement interpretation
 - **WHEN** multiple registered rules evaluate the same parsed statement during one validation call
@@ -38,6 +46,10 @@ Rules SHALL evaluate a structured statement representation produced by the engin
 #### Scenario: Custom rule is added without engine modification
 - **WHEN** an application implements the public rule contract and registers the rule explicitly
 - **THEN** the engine can execute it without changes to engine or parser implementation
+
+#### Scenario: Custom rule behavior is backend-independent
+- **WHEN** the same custom rule and SQL input are used in CGO and no-CGO builds
+- **THEN** the rule observes semantically equivalent statement data and produces the same result without detecting or depending on the active parser backend
 
 ### Requirement: Deterministic rule evaluation
 The engine SHALL use a documented deterministic order for statement traversal and SHALL evaluate rules in registration order for each visited statement. Repeated validation of the same input with the same rules MUST select the same first violation.
@@ -56,4 +68,3 @@ The public rule contract SHALL state that one rule instance can be invoked concu
 #### Scenario: Shared concurrency-safe rule instance
 - **WHEN** concurrent calls use one engine containing a concurrency-safe rule instance
 - **THEN** rule evaluation remains race-free and each call receives its own context and statement input
-

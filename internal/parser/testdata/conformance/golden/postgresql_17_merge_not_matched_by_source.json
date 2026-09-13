@@ -1,0 +1,630 @@
+{
+  "statements": [
+    {
+      "kind": "MergeStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_inventory"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "alias",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "Alias",
+                      "fields": [
+                        {
+                          "name": "aliasname",
+                          "value": {
+                            "kind": "string",
+                            "value": "target"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "11"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "source_relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_inventory_feed"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "alias",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "Alias",
+                      "fields": [
+                        {
+                          "name": "aliasname",
+                          "value": {
+                            "kind": "string",
+                            "value": "source"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "47"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "join_condition",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "A_Expr",
+              "fields": [
+                {
+                  "name": "kind",
+                  "value": {
+                    "kind": "enum",
+                    "value": "AEXPR_OP"
+                  }
+                },
+                {
+                  "name": "name",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "="
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "lexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "ColumnRef",
+                      "fields": [
+                        {
+                          "name": "fields",
+                          "value": {
+                            "kind": "list",
+                            "value": [
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "target"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "item_id"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "85"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "rexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "ColumnRef",
+                      "fields": [
+                        {
+                          "name": "fields",
+                          "value": {
+                            "kind": "list",
+                            "value": [
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "source"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "item_id"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "102"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "100"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "merge_when_clauses",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "MergeWhenClause",
+                  "fields": [
+                    {
+                      "name": "match_kind",
+                      "value": {
+                        "kind": "enum",
+                        "value": "MERGE_WHEN_MATCHED"
+                      }
+                    },
+                    {
+                      "name": "command_type",
+                      "value": {
+                        "kind": "enum",
+                        "value": "CMD_UPDATE"
+                      }
+                    },
+                    {
+                      "name": "override",
+                      "value": {
+                        "kind": "enum",
+                        "value": "OVERRIDING_NOT_SET"
+                      }
+                    },
+                    {
+                      "name": "target_list",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ResTarget",
+                              "fields": [
+                                {
+                                  "name": "name",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "quantity"
+                                  }
+                                },
+                                {
+                                  "name": "val",
+                                  "value": {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "ColumnRef",
+                                      "fields": [
+                                        {
+                                          "name": "fields",
+                                          "value": {
+                                            "kind": "list",
+                                            "value": [
+                                              {
+                                                "kind": "node",
+                                                "value": {
+                                                  "kind": "String",
+                                                  "fields": [
+                                                    {
+                                                      "name": "sval",
+                                                      "value": {
+                                                        "kind": "string",
+                                                        "value": "source"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "kind": "node",
+                                                "value": {
+                                                  "kind": "String",
+                                                  "fields": [
+                                                    {
+                                                      "name": "sval",
+                                                      "value": {
+                                                        "kind": "string",
+                                                        "value": "quantity"
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "name": "location",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "161"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "150"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "MergeWhenClause",
+                  "fields": [
+                    {
+                      "name": "match_kind",
+                      "value": {
+                        "kind": "enum",
+                        "value": "MERGE_WHEN_NOT_MATCHED_BY_SOURCE"
+                      }
+                    },
+                    {
+                      "name": "command_type",
+                      "value": {
+                        "kind": "enum",
+                        "value": "CMD_DELETE"
+                      }
+                    },
+                    {
+                      "name": "override",
+                      "value": {
+                        "kind": "enum",
+                        "value": "OVERRIDING_NOT_SET"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "MergeWhenClause",
+                  "fields": [
+                    {
+                      "name": "match_kind",
+                      "value": {
+                        "kind": "enum",
+                        "value": "MERGE_WHEN_NOT_MATCHED_BY_TARGET"
+                      }
+                    },
+                    {
+                      "name": "command_type",
+                      "value": {
+                        "kind": "enum",
+                        "value": "CMD_INSERT"
+                      }
+                    },
+                    {
+                      "name": "override",
+                      "value": {
+                        "kind": "enum",
+                        "value": "OVERRIDING_NOT_SET"
+                      }
+                    },
+                    {
+                      "name": "target_list",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ResTarget",
+                              "fields": [
+                                {
+                                  "name": "name",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "item_id"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "254"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ResTarget",
+                              "fields": [
+                                {
+                                  "name": "name",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "quantity"
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "263"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "values",
+                      "value": {
+                        "kind": "list",
+                        "value": [
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ColumnRef",
+                              "fields": [
+                                {
+                                  "name": "fields",
+                                  "value": {
+                                    "kind": "list",
+                                    "value": [
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "source"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "item_id"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "281"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node",
+                            "value": {
+                              "kind": "ColumnRef",
+                              "fields": [
+                                {
+                                  "name": "fields",
+                                  "value": {
+                                    "kind": "list",
+                                    "value": [
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "source"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "kind": "node",
+                                        "value": {
+                                          "kind": "String",
+                                          "fields": [
+                                            {
+                                              "name": "sval",
+                                              "value": {
+                                                "kind": "string",
+                                                "value": "quantity"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "name": "location",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "297"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

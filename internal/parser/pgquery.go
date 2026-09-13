@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"strings"
+
 	pg_query "github.com/pganalyze/pg_query_go/v6"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -8,10 +10,17 @@ import (
 const pgQueryNodeName protoreflect.FullName = "pg_query.Node"
 
 // Parse parses complete SQL input with the PostgreSQL grammar and immediately
-// converts the backend tree into package-owned immutable values. This function
-// is the only place where raw parser errors can enter the library.
+// converts the backend tree into package-owned immutable values. Raw backend
+// errors are reduced to a bounded, privacy-safe category before returning.
 func Parse(sql string) (*Result, error) {
-	tree, err := pg_query.Parse(sql)
+	// Both backends expose libpg_query through a NUL-terminated C-string ABI.
+	// Reject embedded NUL bytes before crossing that boundary; otherwise the
+	// parser silently accepts only the prefix and violates complete-input parsing.
+	if strings.IndexByte(sql, 0) >= 0 {
+		return nil, &Error{category: FailureSyntax}
+	}
+
+	tree, err := parseBackend(sql)
 	if err != nil {
 		return nil, &Error{category: FailureSyntax}
 	}

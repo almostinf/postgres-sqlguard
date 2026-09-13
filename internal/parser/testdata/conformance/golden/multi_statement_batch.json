@@ -1,0 +1,699 @@
+{
+  "statements": [
+    {
+      "kind": "SelectStmt",
+      "fields": [
+        {
+          "name": "target_list",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "first_statement"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "ival",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Integer",
+                                  "fields": [
+                                    {
+                                      "name": "ival",
+                                      "value": {
+                                        "kind": "int",
+                                        "value": "1"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "7"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "7"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "limit_option",
+          "value": {
+            "kind": "enum",
+            "value": "LIMIT_OPTION_DEFAULT"
+          }
+        },
+        {
+          "name": "op",
+          "value": {
+            "kind": "enum",
+            "value": "SETOP_NONE"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "InsertStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_audit"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "41"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "cols",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "event_id"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "58"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "message"
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "68"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "select_stmt",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "SelectStmt",
+              "fields": [
+                {
+                  "name": "values_lists",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "List",
+                          "fields": [
+                            {
+                              "name": "items",
+                              "value": {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "A_Const",
+                                      "fields": [
+                                        {
+                                          "name": "ival",
+                                          "value": {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "Integer",
+                                              "fields": [
+                                                {
+                                                  "name": "ival",
+                                                  "value": {
+                                                    "kind": "int",
+                                                    "value": "1"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "name": "location",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "85"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node",
+                                    "value": {
+                                      "kind": "A_Const",
+                                      "fields": [
+                                        {
+                                          "name": "sval",
+                                          "value": {
+                                            "kind": "node",
+                                            "value": {
+                                              "kind": "String",
+                                              "fields": [
+                                                {
+                                                  "name": "sval",
+                                                  "value": {
+                                                    "kind": "string",
+                                                    "value": "synthetic"
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "name": "location",
+                                          "value": {
+                                            "kind": "int",
+                                            "value": "88"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "limit_option",
+                  "value": {
+                    "kind": "enum",
+                    "value": "LIMIT_OPTION_DEFAULT"
+                  }
+                },
+                {
+                  "name": "op",
+                  "value": {
+                    "kind": "enum",
+                    "value": "SETOP_NONE"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "override",
+          "value": {
+            "kind": "enum",
+            "value": "OVERRIDING_NOT_SET"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "UpdateStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_accounts"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "109"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "target_list",
+          "value": {
+            "kind": "list",
+            "value": [
+              {
+                "kind": "node",
+                "value": {
+                  "kind": "ResTarget",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "enabled"
+                      }
+                    },
+                    {
+                      "name": "val",
+                      "value": {
+                        "kind": "node",
+                        "value": {
+                          "kind": "A_Const",
+                          "fields": [
+                            {
+                              "name": "boolval",
+                              "value": {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "Boolean",
+                                  "fields": []
+                                }
+                              }
+                            },
+                            {
+                              "name": "location",
+                              "value": {
+                                "kind": "int",
+                                "value": "142"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "location",
+                      "value": {
+                        "kind": "int",
+                        "value": "132"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "where_clause",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "A_Expr",
+              "fields": [
+                {
+                  "name": "kind",
+                  "value": {
+                    "kind": "enum",
+                    "value": "AEXPR_OP"
+                  }
+                },
+                {
+                  "name": "name",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "="
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "lexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "ColumnRef",
+                      "fields": [
+                        {
+                          "name": "fields",
+                          "value": {
+                            "kind": "list",
+                            "value": [
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "account_id"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "154"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "rexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "A_Const",
+                      "fields": [
+                        {
+                          "name": "ival",
+                          "value": {
+                            "kind": "node",
+                            "value": {
+                              "kind": "Integer",
+                              "fields": [
+                                {
+                                  "name": "ival",
+                                  "value": {
+                                    "kind": "int",
+                                    "value": "7"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "167"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "165"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "DeleteStmt",
+      "fields": [
+        {
+          "name": "relation",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "RangeVar",
+              "fields": [
+                {
+                  "name": "relname",
+                  "value": {
+                    "kind": "string",
+                    "value": "imaginary_sessions"
+                  }
+                },
+                {
+                  "name": "inh",
+                  "value": {
+                    "kind": "bool",
+                    "value": true
+                  }
+                },
+                {
+                  "name": "relpersistence",
+                  "value": {
+                    "kind": "string",
+                    "value": "p"
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "182"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "where_clause",
+          "value": {
+            "kind": "node",
+            "value": {
+              "kind": "A_Expr",
+              "fields": [
+                {
+                  "name": "kind",
+                  "value": {
+                    "kind": "enum",
+                    "value": "AEXPR_OP"
+                  }
+                },
+                {
+                  "name": "name",
+                  "value": {
+                    "kind": "list",
+                    "value": [
+                      {
+                        "kind": "node",
+                        "value": {
+                          "kind": "String",
+                          "fields": [
+                            {
+                              "name": "sval",
+                              "value": {
+                                "kind": "string",
+                                "value": "<"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "lexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "ColumnRef",
+                      "fields": [
+                        {
+                          "name": "fields",
+                          "value": {
+                            "kind": "list",
+                            "value": [
+                              {
+                                "kind": "node",
+                                "value": {
+                                  "kind": "String",
+                                  "fields": [
+                                    {
+                                      "name": "sval",
+                                      "value": {
+                                        "kind": "string",
+                                        "value": "expires_at"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "207"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "rexpr",
+                  "value": {
+                    "kind": "node",
+                    "value": {
+                      "kind": "SQLValueFunction",
+                      "fields": [
+                        {
+                          "name": "op",
+                          "value": {
+                            "kind": "enum",
+                            "value": "SVFOP_CURRENT_TIMESTAMP"
+                          }
+                        },
+                        {
+                          "name": "typmod",
+                          "value": {
+                            "kind": "int",
+                            "value": "-1"
+                          }
+                        },
+                        {
+                          "name": "location",
+                          "value": {
+                            "kind": "int",
+                            "value": "220"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "location",
+                  "value": {
+                    "kind": "int",
+                    "value": "218"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+SELECT
+    $1::integer AS parameter_value,
+    ARRAY[1, 2, 3]::integer[] @> ARRAY[2] AS array_contains,
+    ('{"key":"value"}'::jsonb ->> 'key') = 'value' AS json_operator,
+    ROW(1, 'two', NULL) IS DISTINCT FROM ROW(2, 'two', NULL) AS row_comparison,
+    TRUE,
+    FALSE,
+    NULL,
+    42,
+    -7,
+    3.1415,
+    6.02e23,
+    B'1010',
+    X'DEAD',
+    DATE '2026-01-02',
+    TIMESTAMP WITH TIME ZONE '2026-01-02 03:04:05+00',
+    INTERVAL '2 days 3 hours';

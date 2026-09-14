@@ -7,7 +7,7 @@ import (
 
 	sqlguard "github.com/almostinf/postgres-sqlguard"
 	pgxexample "github.com/almostinf/postgres-sqlguard/example/pgx"
-	"github.com/almostinf/postgres-sqlguard/rules"
+	"github.com/almostinf/postgres-sqlguard/pkg/rules"
 )
 
 func ExampleNewGuardedDB() {

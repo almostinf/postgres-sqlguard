@@ -1,28 +1,48 @@
 # postgres-sqlguard
 
-`postgres-sqlguard` is a driver-independent Go library for validating SQL with
-explicit application rules before it reaches PostgreSQL. It parses the complete
-input with a real PostgreSQL grammar and does not require a database connection.
+<p align="center">
+  <img src="docs/assets/sqlguard-mascot.png" width="240" alt="A turquoise gopher holding a sword protectively in front of a friendly blue elephant-shaped database">
+</p>
+<p align="center"><sub><a href="docs/assets/sqlguard-mascot.md">Artwork provenance and attribution</a></sub></p>
 
-## Requirements
+[![Lint](https://github.com/almostinf/postgres-sqlguard/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/almostinf/postgres-sqlguard/actions/workflows/lint.yml)
+[![Tests](https://github.com/almostinf/postgres-sqlguard/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/almostinf/postgres-sqlguard/actions/workflows/test.yml)
+[![Codecov](https://codecov.io/gh/almostinf/postgres-sqlguard/branch/main/graph/badge.svg)](https://codecov.io/gh/almostinf/postgres-sqlguard)
+[![Go Reference](https://pkg.go.dev/badge/github.com/almostinf/postgres-sqlguard.svg)](https://pkg.go.dev/github.com/almostinf/postgres-sqlguard)
+[![License](https://img.shields.io/github/license/almostinf/postgres-sqlguard)](LICENSE)
 
-- Go 1.26;
-- for the default `CGO_ENABLED=1` build, a working C compiler available through
-  `CC`;
-- or `CGO_ENABLED=0` for the automatically selected WebAssembly backend, with
-  no C compiler or custom build tag required.
+Stop dangerous PostgreSQL statements before they reach your database.
 
-Both backends embed the PostgreSQL 17 grammar and preserve the same public API,
-parser-neutral AST semantics, rule results, typed failures, and observability
-behavior. Compatibility with other PostgreSQL major versions is not implied.
-CGO remains the faster and smaller default; no-CGO trades cold-start time,
-memory, and binary size for simpler builds and cross-compilation. TinyGo is not
-supported. See [Parser backends](docs/parser-backends.md) for the candidate
-comparison, supported matrix, measurements, and reproducible commands.
+`postgres-sqlguard` is a driver-independent Go library that parses complete SQL
+with a real PostgreSQL grammar and applies only the safety rules your
+application explicitly enables. It needs no database connection and never
+executes SQL.
 
-## Usage
+## Why SQLGuard
 
-Implement `Rule`, construct an immutable `Engine`, and call `Validate`:
+- **PostgreSQL-aware** — decisions come from parsed structure, not regexes or
+  keyword matching.
+- **Fail closed** — malformed input is rejected before any rule runs, and every
+  top-level statement and statement-bearing CTE is inspected.
+- **Explicit policy** — built-in and application rules compose in a stable,
+  deterministic order; nothing is enabled globally or implicitly.
+- **Driver-independent** — keep the validation core separate from pgx,
+  `database/sql`, and connection lifecycle choices.
+- **Privacy-safe** — typed errors and bounded observability events never expose
+  SQL text, literals, arguments, credentials, or raw parser diagnostics.
+- **CGO or no-CGO** — use the faster native parser by default or build the same
+  public API with an automatically selected WebAssembly backend.
+
+## Install
+
+```sh
+go get github.com/almostinf/postgres-sqlguard@latest
+```
+
+SQLGuard requires Go 1.26. `CGO_ENABLED=1` also requires a working C compiler;
+`CGO_ENABLED=0` requires no compiler or custom build tag.
+
+## Quick start
 
 ```go
 package main
@@ -30,396 +50,166 @@ package main
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
 
 	sqlguard "github.com/almostinf/postgres-sqlguard"
+	"github.com/almostinf/postgres-sqlguard/pkg/rules"
 )
 
-type denyDelete struct{}
-
-func (denyDelete) ID() string {
-	return "deny_delete"
-}
-
-func (denyDelete) Evaluate(_ context.Context, statement sqlguard.Statement) sqlguard.RuleResult {
-	if statement.Kind() == sqlguard.Kind("DeleteStmt") {
-		return sqlguard.Reject()
-	}
-
-	return sqlguard.Allow()
-}
-
 func main() {
-	engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{}, denyDelete{})
+	engine, err := sqlguard.NewEngine(
+		sqlguard.EngineOptions{},
+		rules.NewUpdateRequiresWhere(),
+	)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	err = engine.Validate(context.Background(), "DELETE FROM accounts")
-	if err == nil {
-		return
-	}
+	err = engine.Validate(
+		context.Background(),
+		"UPDATE accounts SET active = false",
+	)
 
 	var violation *sqlguard.Violation
 	if errors.As(err, &violation) {
-		log.Printf("SQL rejected by rule %q", violation.RuleID())
+		fmt.Println("rejected by", violation.RuleID())
 	}
 }
 ```
 
-Only explicitly supplied rules are active. Rule identifiers must contain at
-most 64 ASCII characters, start with a letter or digit, and otherwise contain
-only letters, digits, `.`, `-`, or `_`. Empty and duplicate identifiers are
-rejected during construction.
+Output:
 
-### Built-in mutation rules
+```text
+rejected by update_requires_where
+```
 
-The public `rules` package provides these opt-in policies:
+The equivalent [executable example](example_test.go) is compiled and run by the
+test suite.
 
-| Constructor | Rule identifier | Policy |
+## Built-in policies
+
+Import the optional rules from
+`github.com/almostinf/postgres-sqlguard/pkg/rules`:
+
+| Constructor | What it prevents |
+| --- | --- |
+| `NewUpdateRequiresWhere` | `UPDATE` without a syntactic `WHERE` clause |
+| `NewDeleteRequiresWhere` | `DELETE` without a syntactic `WHERE` clause |
+| `NewInsertRequiresColumns` | `INSERT` without an explicit target-column list |
+| `NewDenyTruncate` | Every `TRUNCATE` statement |
+| `NewDenyDropTable` | Every `DROP TABLE` statement |
+| `NewDenyAlterTable` | Every `ALTER TABLE` statement |
+
+Register only what your application needs. Comments and string literals cannot
+fake an operation or a required clause because the rules inspect the parsed
+tree. A syntactic predicate such as `WHERE TRUE` is still a `WHERE` clause;
+SQLGuard does not attempt semantic tautology analysis.
+
+Read the [validation guide](docs/validation-guide.md) for custom rules,
+prepared validation, traversal, typed errors, context, concurrency, and the
+complete privacy boundary.
+
+## How validation works
+
+The engine parses the entire input before evaluating policy. For valid SQL it
+visits top-level statements in input order, then statement-bearing CTEs
+depth-first, and runs rules in registration order. The first rejection returns
+a typed `Violation`. Parser failures return a typed `ParseError`; callers use
+standard `errors.As` and `errors.Is` inspection rather than parsing messages.
+
+Constructed engines and prepared values are safe for concurrent use. A custom
+rule or observability sink may be invoked concurrently and therefore owns the
+synchronization of its mutable state.
+
+## Choose a parser backend
+
+Both builds expose the same API, PostgreSQL 17 grammar, parser-neutral rule
+view, validation results, and privacy guarantees. Selection happens at build
+time:
+
+| Build | Best for | Trade-off |
 | --- | --- | --- |
-| `NewUpdateRequiresWhere` | `update_requires_where` | Require a syntactic `WHERE` clause on `UPDATE`. |
-| `NewDeleteRequiresWhere` | `delete_requires_where` | Require a syntactic `WHERE` clause on `DELETE`. |
-| `NewInsertRequiresColumns` | `insert_requires_columns` | Require an explicit target-column list on `INSERT`. |
-| `NewDenyTruncate` | `deny_truncate` | Reject every `TRUNCATE`. |
-| `NewDenyDropTable` | `deny_drop_table` | Reject every `DROP TABLE`. |
-| `NewDenyAlterTable` | `deny_alter_table` | Reject every `ALTER TABLE`, including `ALTER TABLE ALL IN TABLESPACE`. |
+| `CGO_ENABLED=1` | Lowest validation cost and smaller binaries | Requires a working C toolchain |
+| `CGO_ENABLED=0` | Simple cross-compilation and environments without a C compiler | Higher cold-start time, memory, and binary size |
 
-Register only the policies the application needs; they compose through the
-same ordered rule list as application-defined rules:
+On an Apple M4 Pro with Go 1.26, five-run median direct-validation latency
+ranged from `5,821–75,779 ns/op` for CGO and `13,742–164,908 ns/op` for no-CGO
+across the four inputs below.
 
-```go
-import (
-	sqlguard "github.com/almostinf/postgres-sqlguard"
-	"github.com/almostinf/postgres-sqlguard/rules"
-)
+When validation runs immediately before a driver call, that measured
+in-process work corresponds to the following time per check:
 
-engine, err := sqlguard.NewEngine(
-	sqlguard.EngineOptions{},
-	rules.NewUpdateRequiresWhere(),
-	rules.NewDeleteRequiresWhere(),
-	rules.NewInsertRequiresColumns(),
-	rules.NewDenyTruncate(),
-	rules.NewDenyDropTable(),
-	rules.NewDenyAlterTable(),
-)
-```
+| Input | CGO | no-CGO |
+| --- | ---: | ---: |
+| Simple | `0.000005821 s` | `0.000013742 s` |
+| Medium | `0.000075779 s` | `0.000164908 s` |
+| Multi-statement | `0.000034075 s` | `0.000068819 s` |
+| Nested CTE | `0.000048213 s` | `0.000099737 s` |
 
-No built-in policy is enabled implicitly. The rules inspect parsed PostgreSQL
-structure, so comments and literals cannot imitate an operation or required
-clause. Any syntactically present predicate, including `WHERE TRUE`, satisfies
-the UPDATE and DELETE rules; tautology analysis is outside their scope.
+<p align="center">
+  <img src="docs/assets/benchmarks/latency.svg" width="49%" alt="Grouped bars comparing median CGO and no-CGO direct validation latency across four SQL complexity levels">
+  <img src="docs/assets/benchmarks/allocations.svg" width="49%" alt="Grouped bars comparing median allocated bytes per CGO and no-CGO validation across four SQL complexity levels">
+</p>
+<p align="center">
+  <img src="docs/assets/benchmarks/cold-rss.svg" width="49%" alt="Bars comparing median cold-process maximum resident memory for CGO and no-CGO size probes">
+  <img src="docs/assets/benchmarks/binary-size.svg" width="49%" alt="Bars comparing stripped linked CGO and no-CGO size-probe binaries">
+</p>
 
-The INSERT rule checks only that the target-column list is syntactically
-present. PostgreSQL remains responsible for validating its names, values, and
-completeness. The DDL rules deny operation families rather than selected object
-names: for example, `NewDenyDropTable` still permits `DROP VIEW`, and
-`NewDenyAlterTable` still permits other `ALTER` families such as `ALTER ROLE`
-and `ALTER INDEX`.
-
-## Prepared validation
-
-Use `Prepare` when an application repeatedly validates the same stable,
-parameterized SQL text. Preparation parses the complete SQL once and returns an
-opaque immutable value; it does not run rules or make an allow/deny decision.
-Each `ValidatePrepared` call checks its own context and evaluates the engine's
-current rules, so policy decisions are never reused:
-
-```go
-query := "UPDATE accounts SET active = $1 WHERE id = $2"
-
-prepared, err := engine.Prepare(ctx, query)
-if err != nil {
-	return err
-}
-
-if err := engine.ValidatePrepared(requestCtx, prepared); err != nil {
-	return err
-}
-```
-
-A successful prepared value can be copied, shared concurrently, and validated
-by a different engine. Its zero value is rejected with `ErrInvalidPrepared`.
-Preparation remains synchronous: malformed SQL and cancellation are reported
-by `Prepare`, while successful preparation emits no terminal observability
-outcome. `ValidatePrepared` emits the outcome for each actual policy decision.
-
-`Prepared` is SQLGuard's client-side parsed representation. It is unrelated to
-pgx or PostgreSQL server prepared statements and does not execute SQL or bind
-arguments. A prepared value retains parsed identifiers, literals, and byte
-values until it becomes unreachable, so prefer placeholders over embedding
-sensitive values and keep its lifetime bounded by the application.
-
-## pgx example
-
-The compiling [pgx example](example/pgx) demonstrates a narrow validation
-boundary around a pgx connection or pool:
-
-```go
-pool, err := pgxpool.New(ctx, databaseURL)
-if err != nil {
-	return err
-}
-
-guarded, err := pgxexample.NewGuardedDB(engine, pool)
-if err != nil {
-	return err
-}
-
-_, err = guarded.Exec(
-	ctx,
-	"UPDATE accounts SET active = $1 WHERE id = $2",
-	false,
-	accountID,
-)
-```
-
-This is an illustrative example, not an official production adapter, and its
-API has no compatibility guarantee. It protects only `Exec`, `Query`, and
-`QueryRow` calls made through `GuardedDB` with positional arguments. A rejected
-`QueryRow` reports its error from `Scan`, consistent with pgx behavior.
-
-Batch execution, pgx or server prepared-statement workflows, transactions
-(including nested transactions), `CopyFrom`, and direct use of the retained
-connection or pool are outside the example's validation boundary. Arguments
-implementing
-`pgx.QueryRewriter` are rejected before validation or delegation, so
-`pgx.NamedArgs`, `pgx.StrictNamedArgs`, `pgx.StructArgs`, and
-`pgx.StrictStructArgs` are unsupported. Applications adopting this pattern
-remain responsible for ensuring every database path crosses their guarded
-boundary.
-
-## Prepared pgx cache example
-
-The compiling [prepared pgx example](example/pgx-prepared) wraps the same
-`Exec`, `Query`, and `QueryRow` subset with a bounded, concurrent exact-key LRU
-cache. A hit skips parsing but still calls `ValidatePrepared`; a miss calls
-`Prepare` and then `ValidatePrepared`. Stable parameterized SQL therefore
-shares one parsed representation while different positional argument values
-still receive a fresh policy evaluation.
-
-This package is also illustrative and has no production compatibility
-commitment. Its cache retains exact SQL keys and parsed values. Capacity and
-maximum SQL-key length are retention controls, not a heap quota, and eviction
-or garbage collection does not guarantee memory zeroization. See its package
-documentation for the complete privacy and unsupported-path boundary.
+These 2026-09-14 measurements come from one documented host, not portable
+limits or predictions. They measure in-process validation without a database
+round trip, so the seconds above are the validator's absolute runtime rather
+than a measured end-to-end delta against an unguarded database call. `ns/op` is
+execution time, not sampled CPU utilization. See the [release benchmark
+evidence](docs/benchmarks/2026-09-14/README.md) for raw runs, exact units,
+medians, environment, methodology, and regeneration, or [Parser
+backends](docs/parser-backends.md) for the supported matrix and backend details.
 
 ## Observability
 
-Observability is opt-in. The primary constructor now requires `EngineOptions`
-as its first argument.
+Observability is opt-in through `EngineOptions`. Use your own `Metrics` and
+`Logger` implementations or the official packages:
 
-`Metrics` and `Logger` are independently replaceable. Custom implementations
-receive only an immutable `ValidationEvent` with the bounded `mode`, `outcome`,
-and `rule_id` dimensions:
+- [`pkg/observability/prometheus`](pkg/observability/prometheus) records the
+  bounded `service`, `mode`, `outcome`, and `rule_id` labels in a caller-owned
+  registry;
+- [`pkg/observability/slog`](pkg/observability/slog) emits a stable message and
+  the bounded `mode`, `outcome`, and `rule_id` attributes through `log/slog`.
 
-```go
-type applicationMetrics struct{}
+Sink failures and panics never replace validation results or weaken an
+enforce-mode rejection. Read the [observability guide](docs/observability.md)
+for configuration and failure semantics.
 
-func (applicationMetrics) RecordValidation(event sqlguard.ValidationEvent) error {
-	// Update a bounded application counter from event accessors.
-	return nil
-}
+## Integration boundaries
 
-type applicationLogger struct{}
+SQLGuard validates only the calls your application sends through it. It does
+not intercept driver traffic, bind arguments, enforce PostgreSQL privileges,
+replace transactions or constraints, or prove that arbitrary SQL is safe for a
+particular business operation.
 
-func (applicationLogger) LogValidation(event sqlguard.ValidationEvent) error {
-	// Emit a bounded application record from event accessors.
-	return nil
-}
+The repository includes compiling examples for a narrow
+[pgx wrapper](example/pgx) and a bounded
+[prepared-validation cache](example/pgx-prepared). They demonstrate patterns,
+not stable production adapters. Read [Integrating with pgx](docs/pgx-integration.md)
+before adopting their boundary.
 
-engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{
-	Metrics: applicationMetrics{},
-	Logger:  applicationLogger{},
-}, applicationRule)
-```
+## Documentation
 
-A nil interface disables its implementation independently. An interface that
-contains a typed nil is invalid and causes `NewEngine` to fail instead of
-returning a partially configured engine. Configured implementations must be
-safe for concurrent calls.
+- [Release notes for v1.0.0](docs/releases/v1.0.0.md)
+- [Validation guide](docs/validation-guide.md)
+- [Parser backends and reproducible measurements](docs/parser-backends.md)
+- [Release benchmark evidence](docs/benchmarks/2026-09-14/README.md)
+- [Observability guide](docs/observability.md)
+- [Integrating with pgx](docs/pgx-integration.md)
+- [Continuous integration and required checks](docs/ci.md)
+- [Stable release runbook](docs/release-runbook.md)
+- [Licensing and attribution review](docs/licensing.md)
+- [Product requirements](docs/product-requirements.md)
+- [Contributing](CONTRIBUTOR.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-For every validation, the Engine synchronously notifies each enabled
-implementation exactly once. Runtime errors and panics from either
-implementation are contained independently: they are not retried, do not cause
-recursive observability events, do not prevent the other implementation from
-running, and never replace a successful result or weaken an enforce-mode
-rejection.
+## License
 
-### Prometheus
-
-The official Prometheus adapter requires a caller-owned registry and a
-non-empty, construction-time `Service` value:
-
-```go
-import (
-	prometheusclient "github.com/prometheus/client_golang/prometheus"
-
-	sqlguard "github.com/almostinf/postgres-sqlguard"
-	sqlguardprometheus "github.com/almostinf/postgres-sqlguard/observability/prometheus"
-)
-
-registry := prometheusclient.NewRegistry()
-metrics, err := sqlguardprometheus.New(sqlguardprometheus.Config{
-	Registerer: registry,
-	Service:    "payments_api",
-	// MetricName: "payments_sql_validations_total", // Optional override.
-})
-if err != nil {
-	return err
-}
-
-engine, err := sqlguard.NewEngine(sqlguard.EngineOptions{Metrics: metrics}, applicationRule)
-```
-
-The default counter name is `sqlguard_validations_total`. `MetricName` can
-replace it with another valid Prometheus metric name. The counter has exactly
-the labels `service`, `mode`, `outcome`, and `rule_id`; `service` is fixed for
-the adapter lifetime and `rule_id` is empty except for `policy_violation`.
-Collectors are registered only with the supplied registerer—never implicitly
-with the process-global registry. Invalid configuration and registration
-conflicts are returned by the adapter constructor.
-
-### log/slog
-
-The official `log/slog` adapter wraps an existing non-nil logger:
-
-```go
-import (
-	"log/slog"
-	"os"
-
-	sqlguard "github.com/almostinf/postgres-sqlguard"
-	sqlguardslog "github.com/almostinf/postgres-sqlguard/observability/slog"
-)
-
-validationLogger, err := sqlguardslog.New(
-	slog.New(slog.NewJSONHandler(os.Stdout, nil)),
-)
-if err != nil {
-	return err
-}
-
-engine, err := sqlguard.NewEngine(
-	sqlguard.EngineOptions{Logger: validationLogger},
-	applicationRule,
-)
-```
-
-Every enabled record uses the message `sqlguard validation` and exactly the
-attributes `mode`, `outcome`, and `rule_id`. The levels are INFO for `allowed`,
-ERROR for `policy_violation`, `parser_failure`, and `invalid_prepared`, and
-DEBUG for `canceled`. The adapter uses a clean background context so
-request-scoped values cannot reach the configured handler.
-
-Observability never receives SQL text, SQL arguments, literals, comments,
-tokens, credentials, secrets, parser diagnostics, returned errors, or caller
-context values. This release emits only `mode="enforce"`; audit-mode behavior is
-not implemented or implied.
-
-## Validation semantics
-
-The Engine parses the complete SQL string once before running any rule. If any
-statement is malformed, validation returns a typed `ParseError` and no rule is
-called. Empty, whitespace-only, comment-only, and semicolon-only inputs contain
-no executable statements and therefore succeed.
-
-For successfully parsed input, traversal is deterministic:
-
-1. top-level statements are visited in input order;
-2. each statement root is visited first;
-3. statement-bearing CTEs are then visited depth-first in declaration order;
-4. rules run in registration order for each visited statement;
-5. the first rejection stops validation and returns a `Violation`.
-
-Rules receive a read-only `Statement` facade rather than parser protobuf values
-or source SQL. Custom rules can inspect node kinds and named structural fields
-without depending on the parser backend.
-
-## Errors and privacy
-
-Use standard `errors.As` inspection rather than parsing error strings:
-
-```go
-var parseError *sqlguard.ParseError
-if errors.As(err, &parseError) {
-	log.Printf("parse failure category: %s", parseError.Category())
-}
-
-var violation *sqlguard.Violation
-if errors.As(err, &violation) {
-	log.Printf("rejecting rule: %s", violation.RuleID())
-}
-```
-
-Public parser failures, violations, and invalid-prepared failures contain only
-bounded categories or stable rule identifiers. Their error messages are
-constant, and they do not retain or unwrap raw parser diagnostics, SQL text,
-literals, comments, tokens, credentials, or secrets.
-
-## Context and concurrency
-
-`Validate`, `Prepare`, and `ValidatePrepared` preserve caller cancellation.
-Direct and prepared validation pass the exact caller context to every rule and
-return standard `context.Canceled` or `context.DeadlineExceeded` errors
-directly. Cancellation is checked before parsing, after parsing, and before
-every rule invocation.
-
-Parsing is synchronous in both build modes and cannot be interrupted after it
-starts. If cancellation occurs during parsing, it is observed immediately
-after the selected backend returns. Parsing is not moved to a background
-goroutine.
-
-An initialized Engine is safe for concurrent use. A registered Rule instance
-can be invoked concurrently by separate validations, so custom rules must be
-immutable or synchronize their own mutable state.
-
-## Development
-
-Run the standard checks:
-
-```sh
-make precommit
-make precommit-all # CGO and no-CGO
-```
-
-Run the validator fuzz target:
-
-```sh
-make fuzz
-make fuzz FUZZ_TIME=1m
-```
-
-Run the validation benchmarks with allocation reporting:
-
-```sh
-make bench
-make bench-cgo
-make bench-no-cgo
-```
-
-The core suite exposes four independently filterable benchmark groups:
-
-- `BenchmarkEngineValidateByComplexity` compares simple, medium,
-  multi-statement, and nested-CTE SQL with the outcome and observability setup
-  held constant.
-- `BenchmarkEngineValidatePreparedByComplexity` measures the same inputs after
-  preparation, with rule evaluation inside the timed loop and parsing outside
-  it.
-- `BenchmarkEngineValidateByOutcome` compares allowed, policy-violation, and
-  parser-failure paths with observability disabled.
-- `BenchmarkEngineObservability` compares disabled, metrics-only, logger-only,
-  and combined no-op observability sinks using the same allowed SQL input.
-
-The prepared pgx example additionally exposes
-`BenchmarkGuardedDBCache/hit` and `BenchmarkGuardedDBCache/miss`; the latter
-forces parsing and LRU eviction using SQL strings generated before timing.
-
-Results are absolute costs reported as `ns/op`, `B/op`, and `allocs/op`.
-Present the direct complexity comparison as **Validation latency by SQL
-complexity**. The difference between direct and prepared validation estimates
-parsing savings, while the cache benchmarks also include wrapper and cache
-overhead. None of these measurements include a database round trip or represent
-end-to-end query latency. The suite intentionally has no synthetic "without
-SQLGuard" baseline; compare its absolute validation cost with latency measured
-in your real database path.
+Licensed under [Apache-2.0](LICENSE). The project retains this permissive
+license for its explicit contributor patent grant; see the
+[licensing and attribution review](docs/licensing.md) for the decision,
+redistribution notes, and third-party scope.

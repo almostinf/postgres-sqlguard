@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "measurement_date": "2026-09-14",
+  "environment": {
+    "host": "Apple M4 Pro",
+    "os": "Darwin 24.6.0",
+    "architecture": "arm64",
+    "logical_cpus": 14,
+    "go_version": "go1.26.0 darwin/arm64",
+    "cgo_compiler": "Apple Clang 17.0.0 (arm64-apple-darwin24.6.0)"
+  },
+  "methodology": {
+    "run_count": 5,
+    "benchtime": "1s",
+    "commands": {
+      "cgo": "CGO_ENABLED=1 CC=cc go test . -run '^$' -bench '^BenchmarkEngineValidateByComplexity$' -benchmem -benchtime=1s -count=5",
+      "no_cgo": "CGO_ENABLED=0 CC=/definitely/missing/postgres-sqlguard-cc go test . -run '^$' -bench '^BenchmarkEngineValidateByComplexity$' -benchmem -benchtime=1s -count=5"
+    },
+    "raw_results": {
+      "cgo": "raw/cgo.txt",
+      "no_cgo": "raw/no-cgo.txt"
+    },
+    "rss_commands": {
+      "cgo": "for run in 1 2 3 4 5; do /usr/bin/time -l /tmp/postgres-sqlguard-size-probe/sqlguard-cgo; done",
+      "no_cgo": "for run in 1 2 3 4 5; do /usr/bin/time -l /tmp/postgres-sqlguard-size-probe/sqlguard-no-cgo; done"
+    },
+    "size_commands": {
+      "cgo": "stat -f '%N %z bytes' /tmp/postgres-sqlguard-size-probe/sqlguard-cgo",
+      "no_cgo": "stat -f '%N %z bytes' /tmp/postgres-sqlguard-size-probe/sqlguard-no-cgo"
+    }
+  },
+  "units": {
+    "latency": "ns/op",
+    "allocated_bytes": "B/op",
+    "cold_rss": "bytes",
+    "binary_size": "bytes"
+  },
+  "cases": [
+    {
+      "id": "simple",
+      "label": "Simple",
+      "order": 1,
+      "cgo": {"latency_ns_per_op_median": 5821, "allocated_bytes_per_op_median": 5544},
+      "no_cgo": {"latency_ns_per_op_median": 13742, "allocated_bytes_per_op_median": 87568}
+    },
+    {
+      "id": "medium",
+      "label": "Medium",
+      "order": 2,
+      "cgo": {"latency_ns_per_op_median": 75779, "allocated_bytes_per_op_median": 41441},
+      "no_cgo": {"latency_ns_per_op_median": 164908, "allocated_bytes_per_op_median": 123472}
+    },
+    {
+      "id": "multi_statement",
+      "label": "Multi-statement",
+      "order": 3,
+      "cgo": {"latency_ns_per_op_median": 34075, "allocated_bytes_per_op_median": 25032},
+      "no_cgo": {"latency_ns_per_op_median": 68819, "allocated_bytes_per_op_median": 107048}
+    },
+    {
+      "id": "nested_cte",
+      "label": "Nested CTE",
+      "order": 4,
+      "cgo": {"latency_ns_per_op_median": 48213, "allocated_bytes_per_op_median": 29048},
+      "no_cgo": {"latency_ns_per_op_median": 99737, "allocated_bytes_per_op_median": 209368}
+    }
+  ],
+  "footprint": {
+    "workload": "Fixed validation workload",
+    "run_count": 5,
+    "raw_results": {
+      "cgo": "raw/cgo-footprint.txt",
+      "no_cgo": "raw/no-cgo-footprint.txt"
+    },
+    "cgo": {"cold_rss_bytes_median": 11403264, "stripped_binary_size_bytes": 7307938},
+    "no_cgo": {"cold_rss_bytes_median": 313917440, "stripped_binary_size_bytes": 10478434}
+  }
+}

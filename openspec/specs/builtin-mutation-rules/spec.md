@@ -8,14 +8,25 @@ mutations unless the parsed statement contains a syntactic `WHERE` clause.
 ## Requirements
 
 ### Requirement: Public opt-in mutation rules
-The public `rules` package SHALL expose `NewUpdateRequiresWhere`,
-`NewDeleteRequiresWhere`, `NewInsertRequiresColumns`, `NewDenyTruncate`,
-`NewDenyDropTable`, and `NewDenyAlterTable` constructors that return
-implementations of the root package's existing rule contract. The returned
-rules' stable identifiers SHALL be `update_requires_where`,
-`delete_requires_where`, `insert_requires_columns`, `deny_truncate`,
-`deny_drop_table`, and `deny_alter_table` respectively. An Engine MUST apply a
-built-in rule only when the caller explicitly registers it.
+The public package at
+`github.com/almostinf/postgres-sqlguard/pkg/rules` SHALL expose
+`NewUpdateRequiresWhere`, `NewDeleteRequiresWhere`,
+`NewInsertRequiresColumns`, `NewDenyTruncate`, `NewDenyDropTable`, and
+`NewDenyAlterTable` constructors that return implementations of the root
+package's existing rule contract. The module MUST NOT retain the former public
+package at `github.com/almostinf/postgres-sqlguard/rules`. The returned rules'
+stable identifiers SHALL be `update_requires_where`, `delete_requires_where`,
+`insert_requires_columns`, `deny_truncate`, `deny_drop_table`, and
+`deny_alter_table` respectively. An Engine MUST apply a built-in rule only when
+the caller explicitly registers it.
+
+#### Scenario: Rules are imported from the stable package path
+- **WHEN** a consumer imports `github.com/almostinf/postgres-sqlguard/pkg/rules`
+- **THEN** all six built-in rule constructors are available through the root package's existing rule contract
+
+#### Scenario: Former rules package is removed
+- **WHEN** the module packages for the stable release are enumerated
+- **THEN** `github.com/almostinf/postgres-sqlguard/rules` is not present
 
 #### Scenario: Rules are not enabled implicitly
 - **WHEN** an Engine is constructed without built-in mutation rules

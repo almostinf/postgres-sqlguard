@@ -1,0 +1,26 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/almostinf/postgres-sqlguard
+cpu: Apple M4 Pro
+BenchmarkEngineValidateByComplexity/simple-14         	  186010	      5821 ns/op	    5544 B/op	      29 allocs/op
+BenchmarkEngineValidateByComplexity/simple-14         	  213325	      5897 ns/op	    5544 B/op	      29 allocs/op
+BenchmarkEngineValidateByComplexity/simple-14         	  206968	      5873 ns/op	    5544 B/op	      29 allocs/op
+BenchmarkEngineValidateByComplexity/simple-14         	  210466	      5794 ns/op	    5544 B/op	      29 allocs/op
+BenchmarkEngineValidateByComplexity/simple-14         	  210876	      5749 ns/op	    5544 B/op	      29 allocs/op
+BenchmarkEngineValidateByComplexity/medium-14         	   15220	     77891 ns/op	   41441 B/op	     399 allocs/op
+BenchmarkEngineValidateByComplexity/medium-14         	   15834	     75736 ns/op	   41441 B/op	     399 allocs/op
+BenchmarkEngineValidateByComplexity/medium-14         	   15876	     75777 ns/op	   41441 B/op	     399 allocs/op
+BenchmarkEngineValidateByComplexity/medium-14         	   15852	     75779 ns/op	   41441 B/op	     399 allocs/op
+BenchmarkEngineValidateByComplexity/medium-14         	   15717	     76166 ns/op	   41440 B/op	     399 allocs/op
+BenchmarkEngineValidateByComplexity/multi_statement-14         	   35551	     33808 ns/op	   25032 B/op	     164 allocs/op
+BenchmarkEngineValidateByComplexity/multi_statement-14         	   35271	     34075 ns/op	   25032 B/op	     164 allocs/op
+BenchmarkEngineValidateByComplexity/multi_statement-14         	   35187	     34108 ns/op	   25032 B/op	     164 allocs/op
+BenchmarkEngineValidateByComplexity/multi_statement-14         	   34015	     34400 ns/op	   25032 B/op	     164 allocs/op
+BenchmarkEngineValidateByComplexity/multi_statement-14         	   35584	     33887 ns/op	   25032 B/op	     164 allocs/op
+BenchmarkEngineValidateByComplexity/nested_cte-14              	   25734	     46424 ns/op	   29048 B/op	     232 allocs/op
+BenchmarkEngineValidateByComplexity/nested_cte-14              	   25009	     48389 ns/op	   29048 B/op	     232 allocs/op
+BenchmarkEngineValidateByComplexity/nested_cte-14              	   24852	     48465 ns/op	   29048 B/op	     232 allocs/op
+BenchmarkEngineValidateByComplexity/nested_cte-14              	   24919	     48213 ns/op	   29048 B/op	     232 allocs/op
+BenchmarkEngineValidateByComplexity/nested_cte-14              	   25345	     46873 ns/op	   29048 B/op	     232 allocs/op
+PASS
+ok  	github.com/almostinf/postgres-sqlguard	24.484s

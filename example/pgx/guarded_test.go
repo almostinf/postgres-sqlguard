@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sqlguard "github.com/almostinf/postgres-sqlguard"
-	"github.com/almostinf/postgres-sqlguard/rules"
+	"github.com/almostinf/postgres-sqlguard/pkg/rules"
 )
 
 type validatorStub struct{}

@@ -1,29 +1,62 @@
 # Third-Party Notices
 
-This file records the notices and license texts for the parser backends and
-their production runtime dependencies. It applies to distributions that
-include either the CGO PostgreSQL parser backend or the no-CGO WebAssembly
-backend.
+This file records license and attribution material for the release artwork and
+the non-standard-library dependencies reachable from the repository's non-test
+Go packages. The dependency review covers both `CGO_ENABLED=1` and
+`CGO_ENABLED=0`, including the root library, official observability packages,
+and compiling example packages. The dependency graph was reviewed on
+2026-09-14 from `go list -deps ./...` in both build modes.
+
+Dependencies are not vendored into the source repository. These notices are
+provided so source and binary distributors can identify the terms that apply
+to the exact dependency versions they include. Test-only dependencies,
+repository tooling, and GitHub Actions are outside this runtime closure.
+
+## Release artwork
+
+The Go gopher was designed by Renée French and is licensed under the
+[Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/).
+The generated [`docs/assets/sqlguard-mascot.png`](docs/assets/sqlguard-mascot.md)
+uses an adapted Go-gopher-inspired character. Its prompt, processing history,
+review, attribution, and PostgreSQL trademark/no-affiliation statement are
+recorded in the linked provenance document.
 
 The reviewed dependency set is:
 
 | Component | Version | License material |
 | --- | --- | --- |
+| `github.com/beorn7/perks` | `v1.0.1` | MIT |
+| `github.com/cespare/xxhash/v2` | `v2.3.0` | MIT |
+| `github.com/golang/protobuf` | `v1.5.3` | BSD-3-Clause |
+| `github.com/hashicorp/golang-lru/v2` | `v2.0.7` | MPL-2.0; BSD-3-Clause for the incorporated Go list implementation |
+| `github.com/jackc/pgpassfile` | `v1.0.0` | MIT |
+| `github.com/jackc/pgservicefile` | `v0.0.0-20240606120523-5a60cdf6a761` | MIT |
+| `github.com/jackc/pgx/v5` | `v5.11.0` | MIT |
+| `github.com/matttproud/golang_protobuf_extensions` | `v1.0.1` | Apache-2.0; NOTICE |
+| `github.com/pganalyze/pg_query_go/v6` | `v6.2.2` | BSD-3-Clause; PostgreSQL License |
+| `github.com/prometheus/client_golang` | `v1.12.1` | Apache-2.0; NOTICE |
+| `github.com/prometheus/client_model` | `v0.2.0` | Apache-2.0; NOTICE |
+| `github.com/prometheus/common` | `v0.32.1` | Apache-2.0; NOTICE |
+| `github.com/prometheus/procfs` | `v0.7.3` | Apache-2.0; NOTICE |
+| `github.com/tetratelabs/wazero` | `v1.12.0` | Apache-2.0; NOTICE |
 | `github.com/wasilibs/go-pgquery` | `v0.0.0-20260908021017-318158a2ab67` | MIT; upstream pganalyze notice |
 | `github.com/wasilibs/wazero-helpers` | `v0.0.0-20250123031827-cd30c44769bb` | MIT |
-| `github.com/pganalyze/pg_query_go/v6` | `v6.2.2` | BSD-3-Clause; PostgreSQL License |
-| `github.com/tetratelabs/wazero` | `v1.12.0` | Apache-2.0; NOTICE |
-| `google.golang.org/protobuf` | `v1.36.12` | BSD-3-Clause; Additional IP Rights Grant |
 | `golang.org/x/sys` | `v0.44.0` | BSD-3-Clause; Additional IP Rights Grant |
+| `golang.org/x/text` | `v0.36.0` | BSD-3-Clause; Additional IP Rights Grant |
+| `google.golang.org/protobuf` | `v1.36.12` | BSD-3-Clause; Additional IP Rights Grant |
 | embedded `libpg_query` components | PostgreSQL 17-derived artifact in `go-pgquery` | PostgreSQL; BSD-2-Clause; BSD-3-Clause; ISC; MIT; GPL-2.0-or-later with Bison exception; Henry Spencer notice |
 
-This scope is the parser backends' production dependency closure. Dependencies
-used only by tests or repository tooling are not part of a distributed library
-or linked consumer binary and are therefore not reproduced here.
+## MIT-licensed components
 
-## wasilibs/go-pgquery and wasilibs/wazero-helpers — MIT License
+The following copyright notices accompany the common MIT terms below:
 
-Copyright (c) wasilibs authors
+- `github.com/wasilibs/go-pgquery` and
+  `github.com/wasilibs/wazero-helpers`: Copyright (c) wasilibs authors
+- `github.com/beorn7/perks`: Copyright (C) 2013 Blake Mizerany
+- `github.com/cespare/xxhash/v2`: Copyright (c) 2016 Caleb Spare
+- `github.com/jackc/pgpassfile`: Copyright (c) 2019 Jack Christensen
+- `github.com/jackc/pgservicefile`: Copyright (c) 2020 Jack Christensen
+- `github.com/jackc/pgx/v5`: Copyright (c) 2013-2021 Jack Christensen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +101,45 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+## hashicorp/golang-lru/v2 — MPL-2.0 and BSD-3-Clause
+
+Copyright (c) 2014 HashiCorp, Inc.
+
+The module is licensed under the Mozilla Public License 2.0. The complete
+license text is reproduced in [`third_party/licenses/MPL-2.0.txt`](third_party/licenses/MPL-2.0.txt).
+Distributors of executable forms containing this component must comply with
+MPL-2.0 section 3.2, including making the component's Source Code Form
+available and telling recipients how to obtain it. The pinned source is
+available from <https://github.com/hashicorp/golang-lru/tree/v2.0.7>.
+
+The module's incorporated list implementation carries this additional notice:
+
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Google Inc. nor the names of its contributors may be used
+  to endorse or promote products derived from this software without specific
+  prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
 CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -394,7 +466,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## wazero — Apache License 2.0
+## Apache-2.0 components
+
+The common Apache-2.0 text below applies to:
+
+- `github.com/matttproud/golang_protobuf_extensions`;
+- `github.com/prometheus/client_golang`;
+- `github.com/prometheus/client_model`;
+- `github.com/prometheus/common`;
+- `github.com/prometheus/procfs`;
+- `github.com/tetratelabs/wazero`.
 
 Apache License
 Version 2.0, January 2004
@@ -593,12 +674,85 @@ within third-party archives.
     See the License for the specific language governing permissions and
     limitations under the License.
 
-### wazero NOTICE
+### Required NOTICE text
 
 wazero
 Copyright 2020-2023 wazero authors
 
-## Google protobuf and Go x/sys — BSD 3-Clause Licenses
+Copyright 2012 Matt T. Proud (matt.proud@gmail.com)
+
+Prometheus instrumentation library for Go applications
+Copyright 2012-2015 The Prometheus Authors
+
+This product includes software developed at
+SoundCloud Ltd. (http://soundcloud.com/).
+
+The following components are included in this product:
+
+perks - a fork of https://github.com/bmizerany/perks
+https://github.com/beorn7/perks
+Copyright 2013-2015 Blake Mizerany, Björn Rabenstein
+See https://github.com/beorn7/perks/blob/master/README.md for license details.
+
+Go support for Protocol Buffers - Google's data interchange format
+http://github.com/golang/protobuf/
+Copyright 2010 The Go Authors
+See source code for license details.
+
+Support for streaming Protocol Buffer messages for the Go language (golang).
+https://github.com/matttproud/golang_protobuf_extensions
+Copyright 2013 Matt T. Proud
+Licensed under the Apache License, Version 2.0
+
+Data model artifacts for Prometheus.
+Copyright 2012-2015 The Prometheus Authors
+
+This product includes software developed at
+SoundCloud Ltd. (http://soundcloud.com/).
+
+Common libraries shared by Prometheus Go components.
+Copyright 2015 The Prometheus Authors
+
+This product includes software developed at
+SoundCloud Ltd. (http://soundcloud.com/).
+
+procfs provides functions to retrieve system, kernel and process
+metrics from the pseudo-filesystem proc.
+
+Copyright 2014-2015 The Prometheus Authors
+
+This product includes software developed at
+SoundCloud Ltd. (http://soundcloud.com/).
+
+## Go protobuf, Google protobuf, Go x/sys, and Go x/text — BSD 3-Clause Licenses
+
+### github.com/golang/protobuf
+
+Copyright 2010 The Go Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of Google Inc. nor the names of its contributors may be used
+  to endorse or promote products derived from this software without specific
+  prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 
 ### google.golang.org/protobuf
 
@@ -628,9 +782,10 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-### golang.org/x/sys
+### golang.org/x/sys and golang.org/x/text
 
-Copyright 2009 The Go Authors.
+Copyright 2009 The Go Authors. The following identical license text is
+distributed by both modules.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -658,8 +813,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ### Additional IP Rights Grant (Patents)
 
-The following grant is distributed by both `google.golang.org/protobuf` and
-`golang.org/x/sys`:
+The following grant is distributed by `google.golang.org/protobuf`,
+`golang.org/x/sys`, and `golang.org/x/text`:
 
 "This implementation" means the copyrightable works distributed by Google as
 part of the Go project.

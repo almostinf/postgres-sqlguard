@@ -5,7 +5,7 @@ import (
 	"context"
 
 	sqlguard "github.com/almostinf/postgres-sqlguard"
-	"github.com/almostinf/postgres-sqlguard/rules"
+	"github.com/almostinf/postgres-sqlguard/pkg/rules"
 )
 
 func main() {

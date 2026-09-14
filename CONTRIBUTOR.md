@@ -196,6 +196,11 @@ Verification passes only when:
 
 Do not archive a change with failed or skipped verification checks.
 
+For stable version publication after verification, follow the
+[stable release runbook](docs/release-runbook.md). It binds the annotated tag
+to the archived, green `main` commit and defines the immutable-tag recovery
+policy.
+
 ### 7. Archive the change
 
 After successful verification, archive the change:

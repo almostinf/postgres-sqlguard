@@ -55,7 +55,31 @@ No-CGO means that building and running SQLGuard does not require a C compiler
 or native parser library. It does not mean that the parser is pure Go: the
 selected backend embeds `libpg_query` as WASM and executes it with wazero.
 
-## Reproduced measurements
+## Release comparison
+
+The `v1.0.0` comparison measures complete direct validation across simple,
+medium, multi-statement, and nested-CTE SQL. On the 2026-09-14 Apple M4 Pro
+host, the five-run medians were:
+
+| SQL complexity | CGO ns/op | no-CGO ns/op | CGO B/op | no-CGO B/op |
+| --- | ---: | ---: | ---: | ---: |
+| Simple | 5,821 | 13,742 | 5,544 | 87,568 |
+| Medium | 75,779 | 164,908 | 41,441 | 123,472 |
+| Multi-statement | 34,075 | 68,819 | 25,032 | 107,048 |
+| Nested CTE | 48,213 | 99,737 | 29,048 | 209,368 |
+
+Equivalent stripped size probes were 7,307,938 bytes for CGO and 10,478,434
+bytes for no-CGO. Median cold-process maximum RSS was 11,403,264 bytes and
+313,917,440 bytes respectively.
+
+See the dated [release benchmark evidence](benchmarks/2026-09-14/README.md) for
+the machine-readable dataset, every raw run, exact commands, workload details,
+chart regeneration, units, and platform limitations. The figures are evidence
+from one machine rather than portable promises. They measure in-process
+validation without a database call; `ns/op` is execution time, not sampled CPU
+utilization.
+
+## Parser microbenchmark (2026-09-13)
 
 These measurements are evidence for the backend tradeoff, not release limits
 or predictions for another machine.
@@ -131,7 +155,7 @@ ZIP sizes are download/cache footprint, not linked-binary contribution. The
 no-CGO graph still includes `pg_query_go/v6` because both backends share its
 generated protobuf types.
 
-## Reproducing the evidence
+## Reproducing the parser microbenchmark
 
 Run all existing engine benchmarks with identical names and inputs in both
 modes:

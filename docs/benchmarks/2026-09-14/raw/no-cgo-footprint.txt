@@ -1,0 +1,91 @@
+/tmp/postgres-sqlguard-size-probe/sqlguard-no-cgo 10478434 bytes
+        0.75 real         0.48 user         0.04 sys
+           313458688  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19481  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 170  signals received
+                  64  voluntary context switches
+                 916  involuntary context switches
+          7462924179  instructions retired
+          2110608050  cycles elapsed
+           306446984  peak memory footprint
+        0.46 real         0.48 user         0.03 sys
+           313917440  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19510  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 147  signals received
+                  64  voluntary context switches
+                1041  involuntary context switches
+          7440683054  instructions retired
+          2089822237  cycles elapsed
+           307004040  peak memory footprint
+        0.46 real         0.51 user         0.03 sys
+           299368448  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               18625  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 210  signals received
+                 136  voluntary context switches
+                1164  involuntary context switches
+          7828265643  instructions retired
+          2209370669  cycles elapsed
+           292405920  peak memory footprint
+        0.45 real         0.48 user         0.03 sys
+           314048512  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19527  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 179  signals received
+                  89  voluntary context switches
+                1008  involuntary context switches
+          7431575302  instructions retired
+          2065769678  cycles elapsed
+           307085960  peak memory footprint
+        0.46 real         0.48 user         0.03 sys
+           314163200  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19529  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                 136  signals received
+                  54  voluntary context switches
+                 867  involuntary context switches
+          7408608074  instructions retired
+          2085295139  cycles elapsed
+           307135040  peak memory footprint

@@ -3,7 +3,6 @@
 <p align="center">
   <img src="docs/assets/sqlguard-mascot.png" width="240" alt="A turquoise gopher holding a sword protectively in front of a friendly blue elephant-shaped database">
 </p>
-<p align="center"><sub><a href="docs/assets/sqlguard-mascot.md">Artwork provenance and attribution</a></sub></p>
 
 [![Lint](https://github.com/almostinf/postgres-sqlguard/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/almostinf/postgres-sqlguard/actions/workflows/lint.yml)
 [![Tests](https://github.com/almostinf/postgres-sqlguard/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/almostinf/postgres-sqlguard/actions/workflows/test.yml)
@@ -62,7 +61,9 @@ func main() {
 		rules.NewUpdateRequiresWhere(),
 	)
 	if err != nil {
-		panic(err)
+		fmt.Println("configure sqlguard:", err)
+
+		return
 	}
 
 	err = engine.Validate(

@@ -74,8 +74,19 @@ rejected during construction.
 
 ### Built-in mutation rules
 
-The public `rules` package provides opt-in policies for requiring `WHERE` on
-`UPDATE` and `DELETE` statements:
+The public `rules` package provides these opt-in policies:
+
+| Constructor | Rule identifier | Policy |
+| --- | --- | --- |
+| `NewUpdateRequiresWhere` | `update_requires_where` | Require a syntactic `WHERE` clause on `UPDATE`. |
+| `NewDeleteRequiresWhere` | `delete_requires_where` | Require a syntactic `WHERE` clause on `DELETE`. |
+| `NewInsertRequiresColumns` | `insert_requires_columns` | Require an explicit target-column list on `INSERT`. |
+| `NewDenyTruncate` | `deny_truncate` | Reject every `TRUNCATE`. |
+| `NewDenyDropTable` | `deny_drop_table` | Reject every `DROP TABLE`. |
+| `NewDenyAlterTable` | `deny_alter_table` | Reject every `ALTER TABLE`, including `ALTER TABLE ALL IN TABLESPACE`. |
+
+Register only the policies the application needs; they compose through the
+same ordered rule list as application-defined rules:
 
 ```go
 import (
@@ -87,13 +98,24 @@ engine, err := sqlguard.NewEngine(
 	sqlguard.EngineOptions{},
 	rules.NewUpdateRequiresWhere(),
 	rules.NewDeleteRequiresWhere(),
+	rules.NewInsertRequiresColumns(),
+	rules.NewDenyTruncate(),
+	rules.NewDenyDropTable(),
+	rules.NewDenyAlterTable(),
 )
 ```
 
-Neither policy is enabled implicitly. They inspect parsed PostgreSQL structure,
-so comments and literals cannot imitate a `WHERE` clause. Any syntactically
-present predicate, including `WHERE TRUE`, satisfies these baseline rules;
-tautology analysis is outside their scope.
+No built-in policy is enabled implicitly. The rules inspect parsed PostgreSQL
+structure, so comments and literals cannot imitate an operation or required
+clause. Any syntactically present predicate, including `WHERE TRUE`, satisfies
+the UPDATE and DELETE rules; tautology analysis is outside their scope.
+
+The INSERT rule checks only that the target-column list is syntactically
+present. PostgreSQL remains responsible for validating its names, values, and
+completeness. The DDL rules deny operation families rather than selected object
+names: for example, `NewDenyDropTable` still permits `DROP VIEW`, and
+`NewDenyAlterTable` still permits other `ALTER` families such as `ALTER ROLE`
+and `ALTER INDEX`.
 
 ## Prepared validation
 

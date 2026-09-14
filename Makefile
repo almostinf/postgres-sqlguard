@@ -13,7 +13,7 @@ GOLANGCI_LINT := $(GO_ENV) $(GO) tool golangci-lint
 
 .PHONY: lint lint-cgo lint-no-cgo lint-all \
 	test test-cgo test-no-cgo test-all \
-	test-race test-race-cgo test-race-no-cgo test-race-all \
+	test-race test-race-cgo \
 	bench bench-cgo bench-no-cgo bench-all \
 	fuzz fuzz-cgo fuzz-no-cgo fuzz-all \
 	size-probe size-probe-cgo size-probe-no-cgo size-probe-dir \
@@ -46,11 +46,6 @@ test-race:
 
 test-race-cgo:
 	$(MAKE) test-race CGO_ENABLED=1 CC="$(CC)"
-
-test-race-no-cgo:
-	$(MAKE) test-race CGO_ENABLED=0 CC="$(NO_CGO_CC)"
-
-test-race-all: test-race-cgo test-race-no-cgo
 
 bench:
 	$(GO_ENV) $(GO) test -run '^$$' -bench . -benchmem ./...
@@ -92,6 +87,7 @@ precommit: mod-tidy lint test test-race
 
 precommit-cgo: mod-tidy lint-cgo test-cgo test-race-cgo
 
-precommit-no-cgo: mod-tidy lint-no-cgo test-no-cgo test-race-no-cgo
+# The Go race detector requires CGO on Linux; no-CGO concurrency stays covered by the regular test suite.
+precommit-no-cgo: mod-tidy lint-no-cgo test-no-cgo
 
-precommit-all: mod-tidy lint-all test-all test-race-all
+precommit-all: mod-tidy lint-all test-all test-race-cgo

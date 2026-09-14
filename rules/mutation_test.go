@@ -34,6 +34,46 @@ func TestMutationRuleConstructors(t *testing.T) {
 				require.Equal(t, wantRuleID, rule.ID())
 			},
 		},
+		"creates_deny_alter_table": {
+			newRule:    rules.NewDenyAlterTable,
+			wantRuleID: "deny_alter_table",
+			checkResult: func(t *testing.T, rule sqlguard.Rule, wantRuleID string) {
+				t.Helper()
+
+				require.NotNil(t, rule)
+				require.Equal(t, wantRuleID, rule.ID())
+			},
+		},
+		"creates_deny_drop_table": {
+			newRule:    rules.NewDenyDropTable,
+			wantRuleID: "deny_drop_table",
+			checkResult: func(t *testing.T, rule sqlguard.Rule, wantRuleID string) {
+				t.Helper()
+
+				require.NotNil(t, rule)
+				require.Equal(t, wantRuleID, rule.ID())
+			},
+		},
+		"creates_deny_truncate": {
+			newRule:    rules.NewDenyTruncate,
+			wantRuleID: "deny_truncate",
+			checkResult: func(t *testing.T, rule sqlguard.Rule, wantRuleID string) {
+				t.Helper()
+
+				require.NotNil(t, rule)
+				require.Equal(t, wantRuleID, rule.ID())
+			},
+		},
+		"creates_insert_requires_columns": {
+			newRule:    rules.NewInsertRequiresColumns,
+			wantRuleID: "insert_requires_columns",
+			checkResult: func(t *testing.T, rule sqlguard.Rule, wantRuleID string) {
+				t.Helper()
+
+				require.NotNil(t, rule)
+				require.Equal(t, wantRuleID, rule.ID())
+			},
+		},
 		"creates_update_requires_where": {
 			newRule:    rules.NewUpdateRequiresWhere,
 			wantRuleID: "update_requires_where",
@@ -116,8 +156,40 @@ func TestMutationRulesAreOptIn(t *testing.T) {
 	require.NoError(t, err)
 
 	tests := map[string]validationTestCase{
+		"allows_alter_table": {
+			input: "ALTER TABLE accounts ADD COLUMN archived_at timestamptz",
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.NoError(t, err)
+			},
+		},
 		"allows_delete_without_where": {
 			input: "DELETE FROM accounts",
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.NoError(t, err)
+			},
+		},
+		"allows_drop_table": {
+			input: "DROP TABLE accounts",
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.NoError(t, err)
+			},
+		},
+		"allows_insert_without_columns": {
+			input: "INSERT INTO accounts VALUES (42, false)",
+			checkError: func(t *testing.T, err error) {
+				t.Helper()
+
+				require.NoError(t, err)
+			},
+		},
+		"allows_truncate": {
+			input: "TRUNCATE TABLE accounts",
 			checkError: func(t *testing.T, err error) {
 				t.Helper()
 

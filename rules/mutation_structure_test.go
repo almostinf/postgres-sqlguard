@@ -11,11 +11,27 @@ func TestMutationRulesUseParsedStructure(t *testing.T) {
 		t,
 		rules.NewUpdateRequiresWhere(),
 		rules.NewDeleteRequiresWhere(),
+		rules.NewInsertRequiresColumns(),
+		rules.NewDenyTruncate(),
+		rules.NewDenyDropTable(),
+		rules.NewDenyAlterTable(),
 	)
 
 	tests := map[string]validationTestCase{
+		"allows_alter_index": {
+			input:      "ALTER INDEX account_idx RENAME TO account_idx_old",
+			checkError: requireNoValidationError,
+		},
+		"allows_drop_view": {
+			input:      "DROP VIEW account_summary",
+			checkError: requireNoValidationError,
+		},
+		"allows_mutation_text_in_comment": {
+			input:      "SELECT 1 /* INSERT DROP TABLE ALTER TABLE TRUNCATE UPDATE DELETE WHERE */",
+			checkError: requireNoValidationError,
+		},
 		"allows_mutation_text_in_select_literal": {
-			input:      "SELECT 'UPDATE accounts SET active = false; DELETE FROM accounts'",
+			input:      "SELECT 'INSERT DROP TABLE ALTER TABLE TRUNCATE UPDATE DELETE WHERE'",
 			checkError: requireNoValidationError,
 		},
 		"rejects_delete_with_where_only_in_comment": {
@@ -40,6 +56,10 @@ func TestMutationRulesCoverCompleteInput(t *testing.T) {
 		t,
 		rules.NewUpdateRequiresWhere(),
 		rules.NewDeleteRequiresWhere(),
+		rules.NewInsertRequiresColumns(),
+		rules.NewDenyTruncate(),
+		rules.NewDenyDropTable(),
+		rules.NewDenyAlterTable(),
 	)
 
 	tests := map[string]validationTestCase{
@@ -83,6 +103,22 @@ func TestMutationRulesCoverCompleteInput(t *testing.T) {
 			input:      "SELECT 1; UPDATE accounts SET active = false",
 			checkError: requireViolation("update_requires_where"),
 		},
+		"rejects_later_alter_table_statement": {
+			input:      "SELECT 1; ALTER TABLE accounts DROP COLUMN legacy_id",
+			checkError: requireViolation("deny_alter_table"),
+		},
+		"rejects_later_drop_table_statement": {
+			input:      "SELECT 1; DROP TABLE accounts",
+			checkError: requireViolation("deny_drop_table"),
+		},
+		"rejects_later_insert_statement": {
+			input:      "SELECT 1; INSERT INTO accounts VALUES (42, false)",
+			checkError: requireViolation("insert_requires_columns"),
+		},
+		"rejects_later_truncate_statement": {
+			input:      "SELECT 1; TRUNCATE TABLE accounts",
+			checkError: requireViolation("deny_truncate"),
+		},
 		"rejects_update_in_cte": {
 			input: `
 				WITH changed AS (
@@ -90,6 +126,35 @@ func TestMutationRulesCoverCompleteInput(t *testing.T) {
 				)
 				SELECT * FROM changed;
 			`,
+			checkError: requireViolation("update_requires_where"),
+		},
+	}
+
+	runValidationTests(t, engine, tests)
+}
+
+func TestMutationRulesSelectFirstBuiltinViolation(t *testing.T) {
+	engine := mustNewEngine(
+		t,
+		rules.NewUpdateRequiresWhere(),
+		rules.NewDeleteRequiresWhere(),
+		rules.NewInsertRequiresColumns(),
+		rules.NewDenyTruncate(),
+		rules.NewDenyDropTable(),
+		rules.NewDenyAlterTable(),
+	)
+
+	tests := map[string]validationTestCase{
+		"selects_drop_before_later_truncate": {
+			input:      "SELECT 1; DROP TABLE accounts; TRUNCATE TABLE sessions",
+			checkError: requireViolation("deny_drop_table"),
+		},
+		"selects_insert_before_later_update": {
+			input:      "INSERT INTO accounts VALUES (42, false); UPDATE accounts SET active = false",
+			checkError: requireViolation("insert_requires_columns"),
+		},
+		"selects_update_before_later_insert": {
+			input:      "UPDATE accounts SET active = false; INSERT INTO accounts VALUES (42, false)",
 			checkError: requireViolation("update_requires_where"),
 		},
 	}

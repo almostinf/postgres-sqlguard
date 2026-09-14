@@ -1,11 +1,4 @@
-# builtin-mutation-rules Specification
-
-## Purpose
-
-Defines opt-in PostgreSQL-aware rules that prevent broad `UPDATE` and `DELETE`
-mutations unless the parsed statement contains a syntactic `WHERE` clause.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Public opt-in mutation rules
 The public `rules` package SHALL expose `NewUpdateRequiresWhere`,
@@ -44,52 +37,6 @@ built-in rule only when the caller explicitly registers it.
 #### Scenario: Violation identifies the alter-table rule
 - **WHEN** a rule returned by `rules.NewDenyAlterTable` rejects a statement
 - **THEN** the returned typed violation identifies `deny_alter_table` as the rejecting rule
-
-### Requirement: UPDATE statements require a WHERE clause
-A rule returned by `rules.NewUpdateRequiresWhere` MUST reject an `UPDATE`
-statement whose parsed structure does not contain a `WHERE` clause and MUST
-allow an `UPDATE` statement whose parsed structure contains any syntactically
-valid `WHERE` clause. It MUST allow statement kinds other than `UPDATE` to
-continue to other registered rules.
-
-#### Scenario: UPDATE without WHERE is rejected
-- **WHEN** an Engine using `rules.NewUpdateRequiresWhere()` validates `UPDATE accounts SET active = false`
-- **THEN** validation returns a violation from `update_requires_where`
-
-#### Scenario: UPDATE with a predicate is allowed
-- **WHEN** an Engine using `rules.NewUpdateRequiresWhere()` validates `UPDATE accounts SET active = false WHERE id = 42`
-- **THEN** that rule allows validation to continue
-
-#### Scenario: UPDATE with WHERE TRUE is allowed
-- **WHEN** an Engine using `rules.NewUpdateRequiresWhere()` validates `UPDATE accounts SET active = false WHERE TRUE`
-- **THEN** that rule allows validation to continue without attempting tautology analysis
-
-#### Scenario: UPDATE rule ignores another statement kind
-- **WHEN** an Engine using only `rules.NewUpdateRequiresWhere()` validates a syntactically valid `DELETE` statement
-- **THEN** the update rule allows validation to continue
-
-### Requirement: DELETE statements require a WHERE clause
-A rule returned by `rules.NewDeleteRequiresWhere` MUST reject a `DELETE`
-statement whose parsed structure does not contain a `WHERE` clause and MUST
-allow a `DELETE` statement whose parsed structure contains any syntactically
-valid `WHERE` clause. It MUST allow statement kinds other than `DELETE` to
-continue to other registered rules.
-
-#### Scenario: DELETE without WHERE is rejected
-- **WHEN** an Engine using `rules.NewDeleteRequiresWhere()` validates `DELETE FROM accounts`
-- **THEN** validation returns a violation from `delete_requires_where`
-
-#### Scenario: DELETE with a predicate is allowed
-- **WHEN** an Engine using `rules.NewDeleteRequiresWhere()` validates `DELETE FROM accounts WHERE id = 42`
-- **THEN** that rule allows validation to continue
-
-#### Scenario: DELETE with WHERE TRUE is allowed
-- **WHEN** an Engine using `rules.NewDeleteRequiresWhere()` validates `DELETE FROM accounts WHERE TRUE`
-- **THEN** that rule allows validation to continue without attempting tautology analysis
-
-#### Scenario: DELETE rule ignores another statement kind
-- **WHEN** an Engine using only `rules.NewDeleteRequiresWhere()` validates a syntactically valid `UPDATE` statement
-- **THEN** the delete rule allows validation to continue
 
 ### Requirement: Mutation decisions use parsed structure
 The built-in mutation rules MUST determine statement kind, `WHERE` presence,
@@ -143,6 +90,8 @@ depth where PostgreSQL permits the matching operation.
 #### Scenario: Safe mutations across complete input are allowed
 - **WHEN** every `UPDATE` and `DELETE` has a syntactic `WHERE` clause, every `INSERT` has an explicit target-column list, and no statement matches a registered deny rule
 - **THEN** all registered built-in mutation rules allow validation to continue for the complete input
+
+## ADDED Requirements
 
 ### Requirement: INSERT statements require explicit target columns
 A rule returned by `rules.NewInsertRequiresColumns` MUST reject an `INSERT`
@@ -234,17 +183,3 @@ to other registered rules.
 #### Scenario: Alter-table rule ignores another statement kind
 - **WHEN** an Engine using only `rules.NewDenyAlterTable()` validates a syntactically valid `DROP TABLE` statement
 - **THEN** the alter-table rule allows validation to continue
-
-### Requirement: Built-ins preserve rule extensibility
-Rules returned by the public `rules` package and application-defined rules
-SHALL use the same root-package registration and evaluation contracts. Adding
-another rule MUST NOT require a built-in-specific registration path or changes
-to Engine or parser behavior.
-
-#### Scenario: Custom rule is registered alongside built-ins
-- **WHEN** a caller constructs an Engine with both built-in mutation rules and a new application-defined rule
-- **THEN** the Engine evaluates all explicitly registered rules through the same rule contract in registration order
-
-#### Scenario: New rule requires no Engine modification
-- **WHEN** an application implements the public rule contract for an additional policy
-- **THEN** the application can register and execute that policy without modifying the Engine or parser
